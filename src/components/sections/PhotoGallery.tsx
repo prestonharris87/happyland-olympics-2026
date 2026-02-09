@@ -8,13 +8,18 @@ import {
   useContainerPosition,
   useScroller,
 } from "masonic";
-import { CldImage } from "next-cloudinary";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { motion } from "framer-motion";
 import { galleryPhotos, type GalleryPhoto } from "@/lib/gallery-data";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 import { useWindowSize } from "@/lib/use-window-size";
+
+const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dzj3gfw5k";
+
+function cloudinaryUrl(publicId: string, width: number) {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_auto,w_${width}/${publicId}`;
+}
 
 const GalleryContext = createContext<{
   onPhotoClick: (index: number) => void;
@@ -44,12 +49,13 @@ function MasonryCard({
       className="cursor-pointer rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white p-1"
       onClick={() => onPhotoClick(index)}
     >
-      <CldImage
-        src={data.publicId}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={cloudinaryUrl(data.publicId, width * 2)}
         alt={`Happyland Olympics 2025 - Photo ${index + 1}`}
         width={width}
         height={height}
-        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        loading="lazy"
         className="rounded-md w-full h-auto"
       />
     </motion.div>
@@ -105,7 +111,6 @@ function MasonryGrid({ onPhotoClick }: { onPhotoClick: (i: number) => void }) {
 
 export default function PhotoGallery() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
   if (galleryPhotos.length === 0) {
     return (
@@ -143,7 +148,7 @@ export default function PhotoGallery() {
           index={lightboxIndex}
           close={() => setLightboxIndex(-1)}
           slides={galleryPhotos.map((p) => ({
-            src: `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto/${p.publicId}`,
+            src: cloudinaryUrl(p.publicId, 1600),
             width: p.width,
             height: p.height,
           }))}
