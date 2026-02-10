@@ -1511,3 +1511,7 @@ export const galleryPhotos: GalleryPhoto[] = [
     "height": 1007
   }
 ];
+
+export const validPhotos = galleryPhotos.filter(
+  (p) => p.width > 640 && p.height > 640
+);
