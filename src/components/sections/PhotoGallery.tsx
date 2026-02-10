@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,9 +28,11 @@ function getRandomSubset(photos: GalleryPhoto[], count: number): GalleryPhoto[] 
 }
 
 export default function PhotoGallery() {
-  const [photos, setPhotos] = useState(() =>
-    getRandomSubset(validPhotos, DISPLAY_COUNT)
-  );
+  const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
+
+  useEffect(() => {
+    setPhotos(getRandomSubset(validPhotos, DISPLAY_COUNT));
+  }, []);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxSlides, setLightboxSlides] = useState<{ src: string; width: number; height: number }[]>([]);
   const [shuffleKey, setShuffleKey] = useState(0);
