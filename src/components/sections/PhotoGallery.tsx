@@ -31,7 +31,8 @@ export default function PhotoGallery() {
   const [photos, setPhotos] = useState(() =>
     getRandomSubset(validPhotos, DISPLAY_COUNT)
   );
-  const [lightboxIndex, setLightboxIndex] = useState(-1);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxSlides, setLightboxSlides] = useState<{ src: string; width: number; height: number }[]>([]);
   const [shuffleKey, setShuffleKey] = useState(0);
 
   const handleShuffle = useCallback(() => {
@@ -44,10 +45,10 @@ export default function PhotoGallery() {
       <section id="gallery" className="py-20 sm:py-28 px-4">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection>
-            <h2 className="font-heading text-4xl sm:text-5xl font-black text-center uppercase text-dark mb-2">
+            <h2 className="font-heading text-4xl sm:text-5xl font-black text-center uppercase text-gold mb-2">
               Moments from 2025
             </h2>
-            <p className="text-center text-dark/50 font-body mb-10">
+            <p className="text-center text-cream/40 font-body mb-10">
               Photos coming soon! Run the upload script to populate the gallery.
             </p>
           </AnimatedSection>
@@ -57,20 +58,20 @@ export default function PhotoGallery() {
   }
 
   return (
-    <section id="gallery" className="py-20 sm:py-28 px-4">
-      <div className="max-w-6xl mx-auto">
+    <section id="gallery" className="relative py-20 sm:py-28 px-4">
+      <div className="max-w-6xl mx-auto relative z-10">
         <AnimatedSection>
-          <h2 className="font-heading text-4xl sm:text-5xl font-black text-center uppercase text-dark mb-2">
+          <h2 className="font-heading text-4xl sm:text-5xl font-black text-center uppercase text-gold mb-2 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]">
             Moments from 2025
           </h2>
-          <p className="text-center text-dark/50 font-body mb-4">
+          <p className="text-center text-cream/40 font-body mb-4">
             {validPhotos.length} photos
           </p>
 
           <div className="flex justify-center mb-10">
             <button
               onClick={handleShuffle}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-dark text-white font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-200"
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-gold/50 text-gold font-body font-semibold rounded-full shadow-md hover:shadow-gold/20 hover:bg-gold/10 hover:scale-105 active:scale-95 transition-all duration-200"
             >
               <svg
                 width="18"
@@ -112,8 +113,22 @@ export default function PhotoGallery() {
                   transition={{ duration: 0.4, delay: (index % 8) * 0.05 }}
                   whileHover={{ rotate: 0, scale: 1.03 }}
                   style={{ rotate: rotation }}
-                  className="cursor-pointer rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white p-1"
-                  onClick={() => setLightboxIndex(index)}
+                  className="cursor-pointer rounded-lg overflow-hidden shadow-md shadow-black/30 hover:shadow-xl hover:shadow-gold/10 transition-shadow duration-300 bg-cream/90 p-1"
+                  onClick={() => {
+                    const clickedIndex = validPhotos.findIndex(
+                      (vp) => vp.publicId === photo.publicId
+                    );
+                    const allSlides = validPhotos.map((p) => ({
+                      src: cloudinaryUrl(p.publicId, 1600),
+                      width: p.width,
+                      height: p.height,
+                    }));
+                    setLightboxSlides([
+                      ...allSlides.slice(clickedIndex),
+                      ...allSlides.slice(0, clickedIndex),
+                    ]);
+                    setLightboxOpen(true);
+                  }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -128,16 +143,14 @@ export default function PhotoGallery() {
           </motion.div>
         </AnimatePresence>
 
-        <Lightbox
-          open={lightboxIndex >= 0}
-          index={lightboxIndex}
-          close={() => setLightboxIndex(-1)}
-          slides={photos.map((p) => ({
-            src: cloudinaryUrl(p.publicId, 1600),
-            width: p.width,
-            height: p.height,
-          }))}
-        />
+        {lightboxOpen && (
+          <Lightbox
+            open={true}
+            index={0}
+            close={() => setLightboxOpen(false)}
+            slides={lightboxSlides}
+          />
+        )}
       </div>
     </section>
   );

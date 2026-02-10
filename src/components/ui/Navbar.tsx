@@ -26,18 +26,16 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         scrolled
-          ? "bg-white/90 backdrop-blur-md shadow-md"
+          ? "bg-navy/90 backdrop-blur-md shadow-lg shadow-black/20"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 sm:h-20">
         <a
           href="#"
-          className={`font-heading text-lg sm:text-xl font-bold tracking-wider transition-colors ${
-            scrolled ? "text-dark" : "text-dark"
-          }`}
+          className="font-heading text-lg sm:text-xl font-bold tracking-wider transition-colors text-gold hover:text-gold-light"
         >
           HLO 2026
         </a>
@@ -48,9 +46,7 @@ export default function Navbar() {
             <a
               key={link.href}
               href={link.href}
-              className={`text-sm font-semibold tracking-wide uppercase transition-colors hover:text-sunny-dark ${
-                scrolled ? "text-dark" : "text-dark"
-              }`}
+              className="text-sm font-semibold tracking-wide uppercase transition-colors text-cream/80 hover:text-gold"
             >
               {link.label}
             </a>
@@ -64,17 +60,17 @@ export default function Navbar() {
           aria-label="Toggle menu"
         >
           <span
-            className={`block w-6 h-0.5 bg-dark transition-all duration-300 ${
+            className={`block w-6 h-0.5 bg-gold transition-all duration-300 ${
               menuOpen ? "rotate-45 translate-y-2" : ""
             }`}
           />
           <span
-            className={`block w-6 h-0.5 bg-dark transition-all duration-300 ${
+            className={`block w-6 h-0.5 bg-gold transition-all duration-300 ${
               menuOpen ? "opacity-0" : ""
             }`}
           />
           <span
-            className={`block w-6 h-0.5 bg-dark transition-all duration-300 ${
+            className={`block w-6 h-0.5 bg-gold transition-all duration-300 ${
               menuOpen ? "-rotate-45 -translate-y-2" : ""
             }`}
           />
@@ -83,13 +79,13 @@ export default function Navbar() {
 
       {/* Mobile overlay */}
       {menuOpen && (
-        <div className="fixed inset-0 bg-cream z-40 flex flex-col items-center justify-center gap-8">
+        <div className="fixed inset-0 bg-navy z-40 flex flex-col items-center justify-center gap-8">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}
               onClick={() => setMenuOpen(false)}
-              className="font-heading text-3xl font-bold text-dark hover:text-sunny-dark transition-colors"
+              className="font-heading text-3xl font-bold text-gold hover:text-gold-light transition-colors"
             >
               {link.label}
             </a>

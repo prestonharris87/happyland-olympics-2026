@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
+  /* Original palette (kept for backward compat) */
   --color-sunny: #F4C300;
   --color-sunny-light: #FFF3B0;
   --color-sunny-dark: #C69E00;
@@ -19,6 +20,20 @@
   --color-dark: #1A1A2E;
   --color-dark-light: #2A2A4E;
   --color-cream: #FFFDF5;
+
+  /* Celestial dark theme palette */
+  --color-navy: #0B1426;
+  --color-navy-light: #0D1B2A;
+  --color-navy-mid: #122240;
+  --color-earth: #3A7D44;
+  --color-earth-light: #4A9D54;
+  --color-fire: #D4562B;
+  --color-fire-light: #E8734D;
+  --color-water: #5B9BD5;
+  --color-water-light: #7DB3E0;
+  --color-air: #E8A83E;
+  --color-air-light: #F0C060;
+
   --font-heading: var(--font-tourney);
   --font-body: var(--font-montserrat);
 }
@@ -29,11 +44,45 @@ html {
 }
 
 body {
-  background: var(--color-cream);
-  color: var(--color-dark);
+  background: var(--color-navy);
+  color: var(--color-cream);
   font-family: var(--font-body), system-ui, sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading), system-ui, sans-serif;
+}
+
+/* Twinkle animation for stars */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+@keyframes twinkle-slow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Scrollbar styling for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-navy);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-navy-mid);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold-dark);
 }

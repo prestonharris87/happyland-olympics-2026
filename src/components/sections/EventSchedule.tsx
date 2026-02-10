@@ -1,27 +1,47 @@
+"use client";
+
 import AnimatedSection from "@/components/ui/AnimatedSection";
+import ConstellationSVG from "@/components/ui/ConstellationSVG";
 import { SCHEDULE } from "@/lib/constants";
 
 const colorMap = {
-  sky: "border-sky bg-sky/5",
-  gold: "border-gold bg-gold/5",
-  coral: "border-coral bg-coral/5",
+  water: "border-water bg-water/10",
+  fire: "border-fire bg-fire/10",
+  earth: "border-earth bg-earth/10",
 } as const;
 
 const dotColorMap = {
-  sky: "bg-sky",
-  gold: "bg-gold",
-  coral: "bg-coral",
+  water: "bg-water",
+  fire: "bg-fire",
+  earth: "bg-earth",
 } as const;
+
+const headingColorMap = {
+  water: "text-water-light",
+  fire: "text-fire-light",
+  earth: "text-earth-light",
+} as const;
+
+const elementIcons: Record<string, string> = {
+  Water: "\u{1F30A}",
+  Fire: "\u{1F525}",
+  Earth: "\u{1F33F}",
+};
 
 export default function EventSchedule() {
   return (
     <section
       id="schedule"
-      className="py-20 sm:py-28 px-4 bg-gradient-to-b from-green-light/30 to-cream"
+      className="relative py-20 sm:py-28 px-4"
     >
-      <div className="max-w-6xl mx-auto">
+      {/* Background constellation */}
+      <div className="absolute inset-0 overflow-hidden">
+        <ConstellationSVG variant="wide" opacity={0.06} className="top-1/2 -translate-y-1/2" />
+      </div>
+
+      <div className="max-w-6xl mx-auto relative z-10">
         <AnimatedSection>
-          <h2 className="font-heading text-4xl sm:text-5xl font-black text-center uppercase text-dark mb-12">
+          <h2 className="font-heading text-4xl sm:text-5xl font-black text-center uppercase text-gold mb-12 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]">
             The Game Plan
           </h2>
         </AnimatedSection>
@@ -30,16 +50,17 @@ export default function EventSchedule() {
           {SCHEDULE.map((day, i) => (
             <AnimatedSection key={day.day} delay={i * 0.15}>
               <div
-                className={`rounded-2xl border-2 ${colorMap[day.color]} p-6 sm:p-8 h-full`}
+                className={`rounded-2xl border-2 ${colorMap[day.color]} backdrop-blur-sm p-6 sm:p-8 h-full`}
               >
                 <div className="text-center mb-6">
-                  <p className="font-heading text-2xl sm:text-3xl font-bold uppercase text-dark">
+                  <span className="text-2xl mb-2 block">{elementIcons[day.element] || ""}</span>
+                  <p className={`font-heading text-2xl sm:text-3xl font-bold uppercase ${headingColorMap[day.color]}`}>
                     {day.day}
                   </p>
-                  <p className="font-body text-sm text-dark/50 mt-1">
+                  <p className="font-body text-sm text-cream/40 mt-1">
                     {day.date}
                   </p>
-                  <p className="font-body text-base font-semibold text-dark/80 mt-2">
+                  <p className="font-body text-base font-semibold text-cream/70 mt-2">
                     {day.title}
                   </p>
                 </div>
@@ -54,10 +75,10 @@ export default function EventSchedule() {
                         className={`w-2.5 h-2.5 rounded-full ${dotColorMap[day.color]} mt-1.5 shrink-0`}
                       />
                       <div>
-                        <span className="font-body text-sm font-bold text-dark/70">
+                        <span className="font-body text-sm font-bold text-cream/60">
                           {item.time}
                         </span>
-                        <span className="font-body text-sm text-dark/60 ml-2">
+                        <span className="font-body text-sm text-cream/45 ml-2">
                           {item.label}
                         </span>
                       </div>

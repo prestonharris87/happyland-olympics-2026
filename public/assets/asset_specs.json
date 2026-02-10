@@ -1,0 +1,44 @@
+{
+  "assets": [
+    {
+      "name": "star-4point.png",
+      "prompt": "A single 4-pointed star with a warm gold color (#FFD700) and a soft radiant glow emanating outward. The star should have a slightly textured, hand-drawn quality like it was made with gold crayon or oil pastel. The glow should fade softly at the edges. About 200x200 pixels centered."
+    },
+    {
+      "name": "star-6point.png",
+      "prompt": "A single 6-pointed star (Star of David shape) with a warm gold/amber color. Celestial and mystical feeling. Textured like crayon or pastel medium with visible grain. Soft warm glow around it. About 200x200 pixels centered."
+    },
+    {
+      "name": "star-cluster.png",
+      "prompt": "A small cluster of 5 tiny stars scattered in a loose grouping. Stars are different sizes (some tiny pinpoints, some slightly larger). Gold and white colors with soft twinkle effects. Crayon/pastel texture. The cluster should span about 150x100 pixels."
+    },
+    {
+      "name": "leaf-earth.png",
+      "prompt": "An ornate botanical leaf motif in rich forest green (#3A7D44) with gold (#FFD700) veining details. Single decorative leaf with curling tendrils and organic flowing shape. Hand-drawn crayon/pastel texture with visible grain. Lush and detailed. About 200x250 pixels."
+    },
+    {
+      "name": "flame-fire.png",
+      "prompt": "A stylized decorative flame tendril in warm orange-red (#D4562B) with gold highlights. Flowing, ornate, curl-like shape - more artistic than realistic. Single elegant flame wisp. Crayon/pastel hand-drawn texture with grain. About 180x280 pixels."
+    },
+    {
+      "name": "wave-water.png",
+      "prompt": "A flowing decorative wave curl in rich blue (#5B9BD5) with white foam highlights. Single ornate wave motif, elegant and artistic like a Japanese wave illustration. Crayon/pastel texture with visible grain. About 250x180 pixels."
+    },
+    {
+      "name": "swirl-air.png",
+      "prompt": "An elegant air/wind swirl in warm gold-yellow (#E8A83E) with white wisps. Single decorative spiral motion suggesting gentle wind or breeze. Ornate and flowing. Crayon/pastel texture with visible grain. About 200x200 pixels."
+    },
+    {
+      "name": "diamond-geo.png",
+      "prompt": "A geometric diamond/rhombus shape in gold (#FFD700) with a subtle inner glow. Clean geometric shape but with slightly textured crayon-like edges. A small dot or star at the center. About 60x80 pixels, simple but elegant."
+    },
+    {
+      "name": "mandala-center.png",
+      "prompt": "An ornate circular compass rose or mandala design with botanical leaf motifs radiating outward in 8 directions. Gold (#FFD700) and warm amber tones. Intricate geometric patterns with nature-inspired details - leaves, stars, connecting lines. Sacred geometry feel. Crayon/pastel texture. About 400x400 pixels. Very detailed and ornate."
+    },
+    {
+      "name": "constellation-lines.png",
+      "prompt": "A network of thin gold (#FFD700) geometric lines connecting small diamond-shaped dots/nodes in a constellation-like pattern. Lines are thin (1-2px) and elegant. About 8-12 nodes connected by straight lines forming triangles and polygons. Sacred geometry inspired. Subtle and delicate. About 500x400 pixels."
+    }
+  ]
+}
