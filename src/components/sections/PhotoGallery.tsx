@@ -8,7 +8,7 @@ import { validPhotos, type GalleryPhoto } from "@/lib/gallery-data";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dzj3gfw5k";
-const DISPLAY_COUNT = 24;
+const DISPLAY_COUNT = 12;
 
 function cloudinaryUrl(publicId: string, width: number) {
   return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_auto,w_${width}/${publicId}`;

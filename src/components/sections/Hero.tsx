@@ -47,10 +47,8 @@ export default function Hero() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="text-center max-w-3xl mx-auto relative z-10"
       >
-        <div className="mb-4">
-          <span className="inline-block bg-fire/80 text-cream font-body text-xs sm:text-sm font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-            Version 3
-          </span>
+        <div className="mb-8 sm:mb-12">
+          <Countdown />
         </div>
 
         <h1 className="font-heading text-5xl sm:text-7xl md:text-8xl font-black uppercase tracking-tight leading-none text-gold drop-shadow-[0_0_30px_rgba(255,215,0,0.3)]">
@@ -68,10 +66,6 @@ export default function Hero() {
         <p className="font-body text-sm sm:text-base text-cream/50 mt-3 tracking-wide">
           {EVENT_DATES} &bull; {EVENT_LOCATION}
         </p>
-
-        <div className="mt-8 sm:mt-12">
-          <Countdown />
-        </div>
       </motion.div>
 
       {/* Scroll chevron */}
