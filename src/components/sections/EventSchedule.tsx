@@ -22,12 +22,6 @@ const headingColorMap = {
   earth: "text-earth-light",
 } as const;
 
-const elementIcons: Record<string, string> = {
-  Water: "\u{1F30A}",
-  Fire: "\u{1F525}",
-  Earth: "\u{1F33F}",
-};
-
 export default function EventSchedule() {
   return (
     <section
@@ -53,7 +47,6 @@ export default function EventSchedule() {
                 className={`rounded-2xl border-2 ${colorMap[day.color]} backdrop-blur-sm p-6 sm:p-8 h-full`}
               >
                 <div className="text-center mb-6">
-                  <span className="text-2xl mb-2 block">{elementIcons[day.element] || ""}</span>
                   <p className={`font-heading text-2xl sm:text-3xl font-bold uppercase ${headingColorMap[day.color]}`}>
                     {day.day}
                   </p>

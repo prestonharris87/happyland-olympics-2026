@@ -73,7 +73,7 @@ export default function PhotoGallery() {
           <div className="flex justify-center mb-10">
             <button
               onClick={handleShuffle}
-              className="inline-flex items-center gap-2 px-5 py-2.5 border border-gold/50 text-gold font-body font-semibold rounded-full shadow-md hover:shadow-gold/20 hover:bg-gold/10 hover:scale-105 active:scale-95 transition-all duration-200"
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-gold/30 bg-gold/10 backdrop-blur-sm text-gold font-body font-semibold rounded-full shadow-md hover:shadow-gold/20 hover:bg-gold/20 hover:scale-105 active:scale-95 transition-all duration-200"
             >
               <svg
                 width="18"

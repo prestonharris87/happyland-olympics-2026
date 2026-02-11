@@ -19,9 +19,7 @@ export default function Home() {
       <Navbar />
       <main className="relative z-10">
         <Hero />
-        <SectionDivider variant="wave" />
         <VideoRecap />
-        <SectionDivider variant="wave" flip />
         <PhotoGallery />
         <SectionDivider variant="wave" />
         <EventSchedule />
