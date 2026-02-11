@@ -24,7 +24,7 @@ export default function BackgroundImage() {
       </picture>
 
       {/* Layer 2: Mandala — parallax, shifts slowly on scroll */}
-      <motion.div style={{ y: mandalaY }} className="absolute -inset-y-[10%] inset-x-0">
+      <motion.div style={{ y: mandalaY }} className="absolute inset-0">
         <picture>
           <source media="(orientation: portrait)" srcSet="/images/bg-mandala-portrait.webp" type="image/webp" />
           <source media="(orientation: portrait)" srcSet="/images/bg-mandala-portrait.png" type="image/png" />
@@ -32,7 +32,7 @@ export default function BackgroundImage() {
           <img
             src="/images/bg-mandala-landscape.png"
             alt=""
-            className="w-full h-full object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
             loading="eager"
             decoding="async"
           />
