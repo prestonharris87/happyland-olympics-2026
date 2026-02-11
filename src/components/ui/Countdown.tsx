@@ -25,7 +25,7 @@ function calcTimeLeft(): TimeLeft {
 function CountdownBox({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="bg-white/5 backdrop-blur-md border border-gold/20 text-gold font-heading text-3xl sm:text-5xl font-bold rounded-xl w-16 h-16 sm:w-24 sm:h-24 flex items-center justify-center shadow-lg shadow-black/30">
+      <div className="bg-white/10 backdrop-blur-md border border-gold/20 text-gold font-heading text-3xl sm:text-5xl font-bold rounded-xl w-16 h-16 sm:w-24 sm:h-24 flex items-center justify-center shadow-lg shadow-black/30">
         {String(value).padStart(2, "0")}
       </div>
       <span className="text-cream/50 text-xs sm:text-sm mt-2 font-body font-semibold uppercase tracking-wider">

@@ -8,7 +8,6 @@ import Footer from "@/components/sections/Footer";
 import Starfield from "@/components/ui/Starfield";
 import GrainOverlay from "@/components/ui/GrainOverlay";
 import IntroVideoLoader from "@/components/ui/IntroVideoLoader";
-import SectionDivider from "@/components/ui/SectionDivider";
 import BackgroundImage from "@/components/ui/BackgroundImage";
 
 export default function Home() {
@@ -21,9 +20,7 @@ export default function Home() {
         <Hero />
         <VideoRecap />
         <PhotoGallery />
-        <SectionDivider variant="wave" />
         <EventSchedule />
-        <SectionDivider variant="geometric" />
         <AddToCalendar />
       </main>
       <Footer />
