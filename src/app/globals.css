@@ -53,17 +53,6 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading), system-ui, sans-serif;
 }
 
-/* Twinkle animation for stars */
-@keyframes twinkle {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
-}
-
-@keyframes twinkle-slow {
-  0%, 100% { opacity: 0.5; }
-  50% { opacity: 0.8; }
-}
-
 @keyframes float-gentle {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
