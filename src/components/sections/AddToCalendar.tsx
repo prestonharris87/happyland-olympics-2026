@@ -40,6 +40,8 @@ export default function AddToCalendar() {
               location="Happyland, Oklahoma"
               options={["Google", "Apple", "Outlook.com", "iCal"]}
               buttonStyle="round"
+              listStyle="overlay"
+              hideBackground
               lightMode="dark"
               size="5"
             />
