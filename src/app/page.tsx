@@ -7,7 +7,7 @@ import AddToCalendar from "@/components/sections/AddToCalendar";
 import Footer from "@/components/sections/Footer";
 import Starfield from "@/components/ui/Starfield";
 import GrainOverlay from "@/components/ui/GrainOverlay";
-import IntroVideo from "@/components/ui/IntroVideo";
+import IntroVideoLoader from "@/components/ui/IntroVideoLoader";
 import SectionDivider from "@/components/ui/SectionDivider";
 import BackgroundImage from "@/components/ui/BackgroundImage";
 
@@ -30,7 +30,7 @@ export default function Home() {
       </main>
       <Footer />
       <GrainOverlay />
-      <IntroVideo />
+      <IntroVideoLoader />
     </>
   );
 }
