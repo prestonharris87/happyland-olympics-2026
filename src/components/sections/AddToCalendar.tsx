@@ -14,7 +14,7 @@ export default function AddToCalendar() {
       id="save-the-date"
       className="relative py-20 sm:py-28 px-4"
     >
-      <div className="max-w-2xl mx-auto text-center relative z-10 bg-white/5 backdrop-blur-md border border-gold/30 rounded-2xl p-8 sm:p-12 overflow-visible">
+      <div className="max-w-2xl mx-auto text-center relative z-10 bg-white/5 backdrop-blur-md border border-gold/30 rounded-2xl p-8 sm:p-12">
         <AnimatedSection>
           <h2 className="font-heading text-4xl sm:text-5xl font-black uppercase text-gold mb-2 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]">
             Save the Date
@@ -28,7 +28,7 @@ export default function AddToCalendar() {
         </AnimatedSection>
 
         <AnimatedSection delay={0.2}>
-          <div className="flex justify-center relative h-14 overflow-visible">
+          <div className="flex justify-center">
             <AddToCalendarButton
               name="Happyland Olympics 2026"
               description="The 3rd annual Happyland Olympics! Where the Elements Come to Play."
@@ -40,7 +40,7 @@ export default function AddToCalendar() {
               location="Happyland, Oklahoma"
               options={["Google", "Apple", "Outlook.com", "iCal"]}
               buttonStyle="round"
-              listStyle="overlay"
+              listStyle="modal"
               hideBackground
               lightMode="dark"
               size="5"
