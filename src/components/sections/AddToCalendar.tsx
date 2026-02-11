@@ -16,9 +16,12 @@ export default function AddToCalendar() {
     >
       <div className="max-w-2xl mx-auto text-center relative z-10 bg-white/5 backdrop-blur-md border border-gold/30 rounded-2xl p-8 sm:p-12">
         <AnimatedSection>
-          <h2 className="font-heading text-4xl sm:text-5xl font-black uppercase text-gold mb-4 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]">
+          <h2 className="font-heading text-4xl sm:text-5xl font-black uppercase text-gold mb-2 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]">
             Save the Date
           </h2>
+          <p className="font-body text-xl sm:text-2xl font-semibold text-white mb-4">
+            June 12–14, 2026
+          </p>
           <p className="font-body text-cream/50 mb-10 text-lg">
             Don&apos;t miss out — add it to your calendar now.
           </p>
