@@ -37,7 +37,7 @@ export default function VideoRecap() {
           vectorEffect="non-scaling-stroke"
         />
         <path
-          d="M0 96 C16.7 100 33.3 92 50 96 C66.7 100 83.3 92 100 96"
+          d="M0 96 C16.7 92 33.3 100 50 96 C66.7 92 83.3 100 100 96"
           stroke="#FFD700"
           strokeWidth="0.5"
           strokeOpacity="0.2"
