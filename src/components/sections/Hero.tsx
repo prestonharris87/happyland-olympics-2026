@@ -1,9 +1,6 @@
 "use client";
 
 import Countdown from "@/components/ui/Countdown";
-import ConstellationSVG from "@/components/ui/ConstellationSVG";
-import ElementalRing from "@/components/ui/ElementalRing";
-import ParallaxLayer from "@/components/ui/ParallaxLayer";
 import { motion } from "framer-motion";
 import {
   EVENT_NAME,
@@ -12,34 +9,10 @@ import {
   EVENT_DATES,
   EVENT_LOCATION,
 } from "@/lib/constants";
-import { PARALLAX_LAYERS } from "@/lib/parallax";
 
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
-      {/* Constellation pattern behind everything */}
-      <ParallaxLayer speed={PARALLAX_LAYERS.far}>
-        <ConstellationSVG variant="hero" opacity={0.1} />
-      </ParallaxLayer>
-
-      {/* Mandala watermark */}
-      <ParallaxLayer speed={PARALLAX_LAYERS.mid}>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-[500px] h-[500px] opacity-[0.06]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/assets/mandala-center.png"
-              alt=""
-              className="w-full h-full object-contain"
-              aria-hidden="true"
-            />
-          </div>
-        </div>
-      </ParallaxLayer>
-
-      {/* Symmetric elemental medallion ring */}
-      <ElementalRing />
-
       {/* Main content */}
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
