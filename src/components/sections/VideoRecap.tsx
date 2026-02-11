@@ -6,7 +6,7 @@ export default function VideoRecap() {
   return (
     <section
       id="recap"
-      className="relative py-20 sm:py-28 px-4"
+      className="relative py-20 sm:py-28 px-4 bg-navy/40 backdrop-blur-sm border-y border-gold/10"
     >
       <div className="max-w-4xl mx-auto relative z-10">
         <AnimatedSection>
