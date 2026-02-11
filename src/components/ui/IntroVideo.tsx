@@ -290,7 +290,7 @@ export default function IntroVideo() {
               y: cascadeVisible.dates ? 0 : 10,
             }}
             transition={{ duration: CASCADE_ITEM_DURATION, ease: "easeOut" }}
-            className="font-body text-sm sm:text-base text-cream/50 mt-3 tracking-wide"
+            className="font-body text-base sm:text-xl font-semibold text-cream mt-3 tracking-wide"
           >
             {EVENT_DATES} &bull; {EVENT_LOCATION}
           </motion.p>

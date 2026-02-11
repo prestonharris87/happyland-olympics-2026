@@ -36,7 +36,7 @@ export default function Hero() {
           &ldquo;{EVENT_TAGLINE}&rdquo;
         </p>
 
-        <p className="font-body text-sm sm:text-base text-cream/50 mt-3 tracking-wide">
+        <p className="font-body text-base sm:text-xl font-semibold text-cream mt-3 tracking-wide">
           {EVENT_DATES} &bull; {EVENT_LOCATION}
         </p>
       </motion.div>

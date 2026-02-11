@@ -1,6 +1,6 @@
 export const EVENT_NAME = "Happyland Olympics";
 export const EVENT_YEAR = 2026;
-export const EVENT_TAGLINE = "Where the Elements Come to Play";
+export const EVENT_TAGLINE = "Bigger, Badder, Better";
 export const EVENT_LOCATION = "Happyland, Oklahoma";
 export const EVENT_DATES = "June 12–14, 2026";
 
