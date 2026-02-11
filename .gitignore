@@ -40,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# source media (large unoptimized files)
+/media
+
+# claude
+.claude/

@@ -118,7 +118,7 @@ export default function IntroVideo() {
         onAnimationComplete={() => {
           if (state === "fading") handleFadeComplete();
         }}
-        className="fixed inset-0 z-[60] bg-black flex items-center justify-center"
+        className="fixed inset-0 z-[60] flex items-center justify-center"
       >
         <video
           ref={videoRef}
