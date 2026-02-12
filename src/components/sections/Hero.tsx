@@ -74,10 +74,10 @@ export default function Hero() {
         }}
       >
         <motion.span
-          className="font-body text-sm text-gold/50 mb-1"
+          className="font-body text-lg text-gold/50 mb-1"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 2.5, delay: 1.05, times: [0, 0.15, 0.7, 1] }}
+          transition={{ duration: 5, delay: 1.05, times: [0, 0.1, 0.85, 1] }}
         >
           Scroll down
         </motion.span>
