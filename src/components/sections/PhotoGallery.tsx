@@ -20,7 +20,7 @@ function cloudinaryVideoThumb(publicId: string, width: number) {
 }
 
 function cloudinaryVideoUrl(publicId: string) {
-  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_auto/${publicId}`;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_mp4,q_auto/${publicId}`;
 }
 
 function shuffleArray<T>(arr: T[]): T[] {
@@ -201,7 +201,7 @@ export default function PhotoGallery() {
             close={() => setLightboxOpen(false)}
             slides={lightboxSlides}
             plugins={[Video]}
-            video={{ controls: true, playsInline: true, autoPlay: false }}
+            video={{ controls: true, playsInline: true, autoPlay: true }}
           />
         )}
       </div>
