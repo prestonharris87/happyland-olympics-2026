@@ -15,6 +15,10 @@ function cloudinaryImageUrl(publicId: string, width: number) {
   return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_auto,w_${width}/${publicId}`;
 }
 
+function cloudinaryBlurUrl(publicId: string) {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_30,w_50,e_blur:1000/${publicId}`;
+}
+
 function cloudinaryVideoThumb(publicId: string, width: number) {
   return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_jpg,q_auto,w_${width},c_fill/${publicId}`;
 }
@@ -48,9 +52,63 @@ function buildSlide(photo: GalleryPhoto): Slide {
   }
   return {
     src: cloudinaryImageUrl(photo.publicId, 1080),
+    blurSrc: cloudinaryBlurUrl(photo.publicId),
     width: photo.width,
     height: photo.height,
-  };
+  } as Slide;
+}
+
+function BlurSlide({ slide, rect }: { slide: Slide & { blurSrc?: string }; rect: { width: number; height: number } }) {
+  const [loaded, setLoaded] = useState(false);
+
+  if (!("src" in slide) || !slide.src || !slide.blurSrc) return undefined;
+
+  const slideWidth = slide.width ?? 1;
+  const slideHeight = slide.height ?? 1;
+  const aspectRatio = slideWidth / slideHeight;
+  const containerAspect = rect.width / rect.height;
+
+  let displayWidth: number;
+  let displayHeight: number;
+  if (aspectRatio > containerAspect) {
+    displayWidth = rect.width;
+    displayHeight = rect.width / aspectRatio;
+  } else {
+    displayHeight = rect.height;
+    displayWidth = rect.height * aspectRatio;
+  }
+
+  return (
+    <div style={{ position: "relative", width: displayWidth, height: displayHeight }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={slide.blurSrc}
+        alt=""
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={slide.src}
+        alt=""
+        onLoad={() => setLoaded(true)}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          opacity: loaded ? 1 : 0,
+          transition: "opacity 300ms ease-in",
+        }}
+      />
+    </div>
+  );
 }
 
 export default function PhotoGallery() {
@@ -227,6 +285,11 @@ export default function PhotoGallery() {
             slides={lightboxSlides}
             plugins={[Video]}
             video={{ controls: true, playsInline: true, autoPlay: true }}
+            render={{
+              slide: ({ slide, rect }) => (
+                <BlurSlide slide={slide as Slide & { blurSrc?: string }} rect={rect} />
+              ),
+            }}
           />
         )}
       </div>
