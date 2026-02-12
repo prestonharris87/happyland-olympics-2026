@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import Lightbox from "yet-another-react-lightbox";
+import Lightbox, { Slide } from "yet-another-react-lightbox";
+import Video from "yet-another-react-lightbox/plugins/video";
 import "yet-another-react-lightbox/styles.css";
 import { motion, AnimatePresence } from "framer-motion";
 import { validPhotos, type GalleryPhoto } from "@/lib/gallery-data";
@@ -10,8 +11,16 @@ import AnimatedSection from "@/components/ui/AnimatedSection";
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || "dzj3gfw5k";
 const DISPLAY_COUNT = 12;
 
-function cloudinaryUrl(publicId: string, width: number) {
+function cloudinaryImageUrl(publicId: string, width: number) {
   return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_auto,w_${width}/${publicId}`;
+}
+
+function cloudinaryVideoThumb(publicId: string, width: number) {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_jpg,q_auto,w_${width},c_fill/${publicId}`;
+}
+
+function cloudinaryVideoUrl(publicId: string) {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/f_auto,q_auto/${publicId}`;
 }
 
 function shuffleArray<T>(arr: T[]): T[] {
@@ -27,6 +36,23 @@ function getRandomSubset(photos: GalleryPhoto[], count: number): GalleryPhoto[] 
   return shuffleArray(photos).slice(0, count);
 }
 
+function buildSlide(photo: GalleryPhoto): Slide {
+  if (photo.resourceType === "video") {
+    return {
+      type: "video",
+      sources: [{ src: cloudinaryVideoUrl(photo.publicId), type: "video/mp4" }],
+      width: photo.width,
+      height: photo.height,
+      poster: cloudinaryVideoThumb(photo.publicId, 1600),
+    };
+  }
+  return {
+    src: cloudinaryImageUrl(photo.publicId, 1600),
+    width: photo.width,
+    height: photo.height,
+  };
+}
+
 export default function PhotoGallery() {
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
 
@@ -34,13 +60,19 @@ export default function PhotoGallery() {
     setPhotos(getRandomSubset(validPhotos, DISPLAY_COUNT));
   }, []);
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxSlides, setLightboxSlides] = useState<{ src: string; width: number; height: number }[]>([]);
+  const [lightboxSlides, setLightboxSlides] = useState<Slide[]>([]);
   const [shuffleKey, setShuffleKey] = useState(0);
 
   const handleShuffle = useCallback(() => {
     setPhotos(getRandomSubset(validPhotos, DISPLAY_COUNT));
     setShuffleKey((k) => k + 1);
   }, []);
+
+  const imageCount = validPhotos.filter((p) => p.resourceType === "image").length;
+  const videoCount = validPhotos.filter((p) => p.resourceType === "video").length;
+  const countLabel = videoCount > 0
+    ? `${imageCount} photos \u00b7 ${videoCount} videos`
+    : `${validPhotos.length} photos`;
 
   if (validPhotos.length === 0) {
     return (
@@ -67,7 +99,7 @@ export default function PhotoGallery() {
             Moments from 2025
           </h2>
           <p className="text-center text-cream/40 font-body mb-4">
-            {validPhotos.length} photos
+            {countLabel}
           </p>
 
           <div className="flex justify-center mb-10">
@@ -107,6 +139,11 @@ export default function PhotoGallery() {
           >
             {photos.map((photo, index) => {
               const rotation = ((index * 7 + 3) % 5) - 2;
+              const isVideo = photo.resourceType === "video";
+              const thumbSrc = isVideo
+                ? cloudinaryVideoThumb(photo.publicId, 400)
+                : cloudinaryImageUrl(photo.publicId, 400);
+
               return (
                 <motion.div
                   key={photo.publicId}
@@ -120,11 +157,7 @@ export default function PhotoGallery() {
                     const clickedIndex = validPhotos.findIndex(
                       (vp) => vp.publicId === photo.publicId
                     );
-                    const allSlides = validPhotos.map((p) => ({
-                      src: cloudinaryUrl(p.publicId, 1600),
-                      width: p.width,
-                      height: p.height,
-                    }));
+                    const allSlides = validPhotos.map(buildSlide);
                     setLightboxSlides([
                       ...allSlides.slice(clickedIndex),
                       ...allSlides.slice(0, clickedIndex),
@@ -132,13 +165,29 @@ export default function PhotoGallery() {
                     setLightboxOpen(true);
                   }}
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={cloudinaryUrl(photo.publicId, 400)}
-                    alt={`Happyland Olympics 2025 - Photo ${index + 1}`}
-                    loading="lazy"
-                    className="rounded-md w-full aspect-square object-cover"
-                  />
+                  <div className="relative">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={thumbSrc}
+                      alt={`Happyland Olympics 2025 - ${isVideo ? "Video" : "Photo"} ${index + 1}`}
+                      loading="lazy"
+                      className="rounded-md w-full aspect-square object-cover"
+                    />
+                    {isVideo && (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="white"
+                          >
+                            <polygon points="6,3 21,12 6,21" />
+                          </svg>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </motion.div>
               );
             })}
@@ -151,6 +200,8 @@ export default function PhotoGallery() {
             index={0}
             close={() => setLightboxOpen(false)}
             slides={lightboxSlides}
+            plugins={[Video]}
+            video={{ controls: true, playsInline: true, autoPlay: false }}
           />
         )}
       </div>

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "sync-gallery": "npx tsx scripts/sync-gallery.ts"
   },
   "dependencies": {
     "add-to-calendar-button-react": "^2.13.5",

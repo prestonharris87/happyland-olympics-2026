@@ -16,12 +16,6 @@ export default function Footer() {
         <p className="font-body text-cream/40 mt-2 italic">
           &ldquo;{EVENT_TAGLINE}&rdquo;
         </p>
-        <div className="flex justify-center gap-6 mt-4">
-          <span className="text-earth/60 text-sm">Earth</span>
-          <span className="text-fire/60 text-sm">Fire</span>
-          <span className="text-water/60 text-sm">Water</span>
-          <span className="text-air/60 text-sm">Air</span>
-        </div>
         <p className="font-body text-cream/20 mt-4 text-sm">
           &copy; {EVENT_YEAR}
         </p>
