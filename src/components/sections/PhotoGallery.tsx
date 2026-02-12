@@ -43,11 +43,18 @@ function buildSlide(photo: GalleryPhoto): Slide {
       sources: [{ src: cloudinaryVideoUrl(photo.publicId), type: "video/mp4" }],
       width: photo.width,
       height: photo.height,
-      poster: cloudinaryVideoThumb(photo.publicId, 1600),
+      poster: cloudinaryVideoThumb(photo.publicId, 800),
     };
   }
+  // Use the 400px thumbnail (already cached from the grid) as the default src
+  // for an instant preview, then let srcSet load the right size for the device
   return {
-    src: cloudinaryImageUrl(photo.publicId, 1600),
+    src: cloudinaryImageUrl(photo.publicId, 400),
+    srcSet: [640, 1080, 1600].map((w) => ({
+      src: cloudinaryImageUrl(photo.publicId, w),
+      width: w,
+      height: Math.round((photo.height / photo.width) * w),
+    })),
     width: photo.width,
     height: photo.height,
   };
@@ -193,6 +200,31 @@ export default function PhotoGallery() {
             })}
           </motion.div>
         </AnimatePresence>
+
+        <div className="flex justify-center mt-10">
+          <button
+            onClick={handleShuffle}
+            className="inline-flex items-center gap-2 px-5 py-2.5 border border-gold/30 bg-gold/10 backdrop-blur-sm text-gold font-body font-semibold rounded-full shadow-md hover:shadow-gold/20 hover:bg-gold/20 hover:scale-105 active:scale-95 transition-all duration-200"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="16 3 21 3 21 8" />
+              <line x1="4" y1="20" x2="21" y2="3" />
+              <polyline points="21 16 21 21 16 21" />
+              <line x1="15" y1="15" x2="21" y2="21" />
+              <line x1="4" y1="4" x2="9" y2="9" />
+            </svg>
+            Shuffle
+          </button>
+        </div>
 
         {lightboxOpen && (
           <Lightbox
