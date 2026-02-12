@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 
 const EVENT_TARGET = new Date("2026-06-12T19:00:00-05:00").getTime();
 
@@ -29,28 +28,17 @@ const BOX_CLASSES =
 function CountdownBox({
   value,
   label,
-  index,
 }: {
   value: number;
   label: string;
-  index: number;
 }) {
   return (
-    <motion.div
-      className="flex flex-col items-center"
-      initial={{ opacity: 0, scale: 0.7, y: 15 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{
-        duration: 0.5,
-        ease: [0.22, 1, 0.36, 1],
-        delay: index * 0.08,
-      }}
-    >
+    <div className="flex flex-col items-center">
       <div className={BOX_CLASSES}>{String(value).padStart(2, "0")}</div>
       <span className="text-cream/50 text-xs sm:text-sm mt-2 font-body font-semibold uppercase tracking-wider">
         {label}
       </span>
-    </motion.div>
+    </div>
   );
 }
 
@@ -88,12 +76,11 @@ export default function Countdown() {
 
   return (
     <div className="flex gap-3 sm:gap-6 justify-center">
-      {boxes.map((box, i) => (
+      {boxes.map((box) => (
         <CountdownBox
           key={box.label}
           value={box.value}
           label={box.label}
-          index={i}
         />
       ))}
     </div>
