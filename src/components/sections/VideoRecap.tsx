@@ -1,8 +1,38 @@
 "use client";
 
+import { useRef, useState, useCallback } from "react";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 
+interface WebKitVideoElement extends HTMLVideoElement {
+  webkitEnterFullscreen?: () => void;
+}
+
 export default function VideoRecap() {
+  const videoRef = useRef<WebKitVideoElement>(null);
+  const [isMobile] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 768px)").matches
+      : false
+  );
+  const [hasPlayed, setHasPlayed] = useState(false);
+
+  const handlePlayTap = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.play();
+
+    if (isMobile) {
+      if (video.webkitEnterFullscreen) {
+        video.webkitEnterFullscreen();
+      } else if (video.requestFullscreen) {
+        video.requestFullscreen().catch(() => {});
+      }
+    }
+
+    setHasPlayed(true);
+  }, [isMobile]);
+
   return (
     <section id="recap" className="relative py-28 sm:py-36 px-4">
       {/* Clip-path definition for wavy edges */}
@@ -54,9 +84,10 @@ export default function VideoRecap() {
         </AnimatedSection>
 
         <AnimatedSection delay={0.2}>
-          <div className="rounded-2xl overflow-hidden shadow-2xl shadow-black/40 bg-navy-mid border border-gold/10">
+          <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-black/40 bg-navy-mid border border-gold/10">
             <video
-              controls
+              ref={videoRef}
+              controls={!isMobile || hasPlayed}
               playsInline
               preload="metadata"
               poster="/videos/recap-thumbnail.png"
@@ -65,6 +96,25 @@ export default function VideoRecap() {
               <source src="/videos/recap-2025.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
+            {isMobile && !hasPlayed && (
+              <button
+                onClick={handlePlayTap}
+                aria-label="Play video in fullscreen"
+                className="absolute inset-0 z-10 flex items-center justify-center bg-black/30"
+              >
+                <div className="w-16 h-16 rounded-full bg-gold/90 flex items-center justify-center shadow-lg">
+                  <svg
+                    width="28"
+                    height="32"
+                    viewBox="0 0 28 32"
+                    fill="none"
+                    className="ml-1"
+                  >
+                    <path d="M4 2L26 16L4 30V2Z" fill="#1a1a3e" />
+                  </svg>
+                </div>
+              </button>
+            )}
           </div>
         </AnimatedSection>
       </div>
