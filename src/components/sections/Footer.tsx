@@ -17,7 +17,7 @@ export default function Footer() {
           &ldquo;{EVENT_TAGLINE}&rdquo;
         </p>
         <p className="font-body text-cream/20 mt-4 text-sm">
-          &copy; {EVENT_YEAR}
+          &copy; {EVENT_YEAR} Happyland Ventures
         </p>
       </div>
     </footer>

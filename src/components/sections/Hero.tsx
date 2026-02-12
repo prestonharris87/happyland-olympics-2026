@@ -63,9 +63,9 @@ export default function Hero() {
         </motion.p>
       </div>
 
-      {/* Scroll chevron */}
+      {/* Scroll hint */}
       <motion.div
-        className="absolute bottom-8 z-10"
+        className="absolute bottom-8 z-10 flex flex-col items-center"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, y: [0, 10, 0] }}
         transition={{
@@ -73,6 +73,14 @@ export default function Hero() {
           y: { duration: 2, repeat: Infinity, delay: 1.05 },
         }}
       >
+        <motion.span
+          className="font-body text-sm text-gold/50 mb-1"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 1, 0] }}
+          transition={{ duration: 2.5, delay: 1.05, times: [0, 0.15, 0.7, 1] }}
+        >
+          Scroll down
+        </motion.span>
         <svg
           className="w-8 h-8 text-gold/50"
           fill="none"

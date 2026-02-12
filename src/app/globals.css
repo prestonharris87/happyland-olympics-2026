@@ -41,7 +41,6 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
-  scrollbar-gutter: stable;
 }
 
 body {
@@ -59,22 +58,17 @@ h1, h2, h3, h4, h5, h6 {
   50% { transform: translateY(-10px); }
 }
 
-/* Scrollbar styling for dark theme */
-::-webkit-scrollbar {
-  width: 8px;
+/* Hide scrollbar while keeping scroll functionality */
+html {
+  scrollbar-width: none;          /* Firefox */
+  -ms-overflow-style: none;       /* IE / Edge */
+}
+html::-webkit-scrollbar {
+  display: none;                  /* Chrome / Safari */
 }
 
-::-webkit-scrollbar-track {
-  background: var(--color-navy);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--color-navy-mid);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-gold-dark);
+.yarl-large-icons {
+  --yarl__icon_size: 48px;
 }
 
 @keyframes hint-bounce-left {

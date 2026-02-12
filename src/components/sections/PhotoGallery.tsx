@@ -374,6 +374,8 @@ export default function PhotoGallery() {
             slides={lightboxSlides}
             plugins={[Video]}
             video={{ controls: true, playsInline: true, autoPlay: true }}
+            controller={{ closeOnBackdropClick: true }}
+            className="yarl-large-icons"
             render={{
               slide: ({ slide, rect }) => (
                 <BlurSlide slide={slide as Slide & { blurSrc?: string }} rect={rect} />
