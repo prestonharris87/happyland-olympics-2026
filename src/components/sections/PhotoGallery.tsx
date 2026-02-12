@@ -58,6 +58,85 @@ function buildSlide(photo: GalleryPhoto): Slide {
   } as Slide;
 }
 
+function NavigationHint({ onDismiss }: { onDismiss: () => void }) {
+  const [visible, setVisible] = useState(true);
+  const isMobile =
+    typeof window !== "undefined" && "ontouchstart" in window;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVisible(false);
+      setTimeout(onDismiss, 400);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [onDismiss]);
+
+  const dismiss = () => {
+    setVisible(false);
+    setTimeout(onDismiss, 400);
+  };
+
+  return (
+    <div
+      onClick={dismiss}
+      style={{
+        position: "absolute",
+        inset: 0,
+        zIndex: 9999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "2rem",
+        background: "rgba(0,0,0,0.5)",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 400ms ease-out",
+        cursor: "pointer",
+      }}
+    >
+      {/* Left arrow */}
+      <svg
+        width="32"
+        height="32"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="white"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{ animation: "hint-bounce-left 1s ease-in-out infinite" }}
+      >
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+
+      <span
+        style={{
+          color: "white",
+          fontSize: "16px",
+          fontFamily: "var(--font-body), system-ui, sans-serif",
+          userSelect: "none",
+        }}
+      >
+        {isMobile ? "Swipe to navigate" : "Use \u2190 \u2192 arrow keys to navigate"}
+      </span>
+
+      {/* Right arrow */}
+      <svg
+        width="32"
+        height="32"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="white"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{ animation: "hint-bounce-right 1s ease-in-out infinite" }}
+      >
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </div>
+  );
+}
+
 function BlurSlide({ slide, rect }: { slide: Slide & { blurSrc?: string }; rect: { width: number; height: number } }) {
   const [loaded, setLoaded] = useState(false);
 
@@ -120,6 +199,16 @@ export default function PhotoGallery() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxSlides, setLightboxSlides] = useState<Slide[]>([]);
   const [shuffleKey, setShuffleKey] = useState(0);
+  const [hintSeen, setHintSeen] = useState(true);
+
+  useEffect(() => {
+    setHintSeen(localStorage.getItem("lightbox-hint-seen") === "true");
+  }, []);
+
+  const dismissHint = useCallback(() => {
+    setHintSeen(true);
+    localStorage.setItem("lightbox-hint-seen", "true");
+  }, []);
 
   const handleShuffle = useCallback(() => {
     setPhotos(getRandomSubset(validPhotos, DISPLAY_COUNT));
@@ -289,6 +378,8 @@ export default function PhotoGallery() {
               slide: ({ slide, rect }) => (
                 <BlurSlide slide={slide as Slide & { blurSrc?: string }} rect={rect} />
               ),
+              controls: () =>
+                !hintSeen ? <NavigationHint onDismiss={dismissHint} /> : null,
             }}
           />
         )}
