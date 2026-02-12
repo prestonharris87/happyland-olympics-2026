@@ -13,7 +13,7 @@ import Countdown from "@/components/ui/Countdown";
 
 const SESSION_KEY = "happyland-intro-seen";
 const SKIP_FADE_IN_DELAY = 1.5;
-const MAX_TIMEOUT = 15_000;
+const MAX_TIMEOUT = 1_500;
 
 // Choreography timing constants
 const REVEAL_BEFORE_END = 1.0;

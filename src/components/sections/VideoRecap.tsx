@@ -59,6 +59,7 @@ export default function VideoRecap() {
               controls
               playsInline
               preload="metadata"
+              poster="/videos/recap-thumbnail.png"
               className="w-full aspect-video"
             >
               <source src="/videos/recap-2025.mp4" type="video/mp4" />

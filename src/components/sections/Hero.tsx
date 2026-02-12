@@ -10,42 +10,68 @@ import {
   EVENT_LOCATION,
 } from "@/lib/constants";
 
+const EASE = [0.22, 1, 0.36, 1] as const;
+const DURATION = 0.7;
+
+function stagger(delay: number) {
+  return {
+    initial: { opacity: 0, scale: 0.92, y: 20 },
+    animate: { opacity: 1, scale: 1, y: 0 },
+    transition: { duration: DURATION, ease: EASE, delay },
+  };
+}
+
 export default function Hero() {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
-      {/* Main content */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="text-center max-w-3xl mx-auto relative z-10"
-      >
-        <div className="mb-8 sm:mb-12">
+      <div className="text-center max-w-3xl mx-auto relative z-10">
+        {/* Countdown */}
+        <motion.div {...stagger(0)} className="mb-8 sm:mb-12">
           <Countdown />
-        </div>
+        </motion.div>
 
-        <h1 className="font-heading text-5xl sm:text-7xl md:text-8xl font-black uppercase tracking-tight leading-none text-gold drop-shadow-[0_0_30px_rgba(255,215,0,0.3)]">
+        {/* Title */}
+        <motion.h1
+          {...stagger(0.3)}
+          className="font-heading text-5xl sm:text-7xl md:text-8xl font-black uppercase tracking-tight leading-none text-gold drop-shadow-[0_0_30px_rgba(255,215,0,0.3)]"
+        >
           {EVENT_NAME}
-        </h1>
+        </motion.h1>
 
-        <p className="font-heading text-5xl sm:text-7xl md:text-8xl font-black text-gold-light mt-1 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]">
+        {/* Year */}
+        <motion.p
+          {...stagger(0.45)}
+          className="font-heading text-5xl sm:text-7xl md:text-8xl font-black text-gold-light mt-1 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]"
+        >
           {EVENT_YEAR}
-        </p>
+        </motion.p>
 
-        <p className="font-body text-lg sm:text-2xl font-semibold text-cream/80 mt-4 italic">
+        {/* Tagline */}
+        <motion.p
+          {...stagger(0.6)}
+          className="font-body text-lg sm:text-2xl font-semibold text-cream/80 mt-4 italic"
+        >
           &ldquo;{EVENT_TAGLINE}&rdquo;
-        </p>
+        </motion.p>
 
-        <p className="font-body text-base sm:text-xl font-semibold text-cream mt-3 tracking-wide">
+        {/* Date / Location */}
+        <motion.p
+          {...stagger(0.75)}
+          className="font-body text-base sm:text-xl font-semibold text-cream mt-3 tracking-wide"
+        >
           {EVENT_DATES} &bull; {EVENT_LOCATION}
-        </p>
-      </motion.div>
+        </motion.p>
+      </div>
 
       {/* Scroll chevron */}
       <motion.div
         className="absolute bottom-8 z-10"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1, y: [0, 10, 0] }}
+        transition={{
+          opacity: { duration: 0.5, delay: 1.05, ease: "easeOut" },
+          y: { duration: 2, repeat: Infinity, delay: 1.05 },
+        }}
       >
         <svg
           className="w-8 h-8 text-gold/50"
