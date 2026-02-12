@@ -46,15 +46,8 @@ function buildSlide(photo: GalleryPhoto): Slide {
       poster: cloudinaryVideoThumb(photo.publicId, 800),
     };
   }
-  // Use the 400px thumbnail (already cached from the grid) as the default src
-  // for an instant preview, then let srcSet load the right size for the device
   return {
-    src: cloudinaryImageUrl(photo.publicId, 400),
-    srcSet: [640, 1080, 1600].map((w) => ({
-      src: cloudinaryImageUrl(photo.publicId, w),
-      width: w,
-      height: Math.round((photo.height / photo.width) * w),
-    })),
+    src: cloudinaryImageUrl(photo.publicId, 1080),
     width: photo.width,
     height: photo.height,
   };
