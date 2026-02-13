@@ -34,25 +34,12 @@ export default function BackgroundImage() {
           <img
             src="/images/bg-stars-rear-landscape.png"
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
+            className="shimmer-layer absolute inset-0 w-full h-full object-cover"
+            style={{ animation: "shimmer-stars-rear 30s ease-in-out infinite" }}
             loading="eager"
             decoding="async"
           />
         </picture>
-        <div
-          className="shimmer-overlay absolute pointer-events-none"
-          style={{
-            inset: "-20%",
-            mixBlendMode: "screen",
-            willChange: "transform, opacity",
-            animation: "shimmer-drift-rear 30s ease-in-out infinite",
-            background: [
-              "radial-gradient(ellipse 35% 35% at 25% 30%, rgba(255,253,230,0.12) 0%, transparent 70%)",
-              "radial-gradient(ellipse 30% 40% at 70% 60%, rgba(255,255,255,0.10) 0%, transparent 70%)",
-              "radial-gradient(ellipse 40% 30% at 50% 80%, rgba(255,215,0,0.08) 0%, transparent 70%)",
-            ].join(", "),
-          }}
-        />
       </motion.div>
 
       {/* Layer 3: Front stars — medium parallax */}
@@ -64,25 +51,12 @@ export default function BackgroundImage() {
           <img
             src="/images/bg-stars-front-landscape.png"
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
+            className="shimmer-layer absolute inset-0 w-full h-full object-cover"
+            style={{ animation: "shimmer-stars-front 20s ease-in-out infinite" }}
             loading="eager"
             decoding="async"
           />
         </picture>
-        <div
-          className="shimmer-overlay absolute pointer-events-none"
-          style={{
-            inset: "-20%",
-            mixBlendMode: "screen",
-            willChange: "transform, opacity",
-            animation: "shimmer-drift-front 20s ease-in-out infinite",
-            background: [
-              "radial-gradient(ellipse 28% 32% at 30% 40%, rgba(255,255,255,0.14) 0%, transparent 70%)",
-              "radial-gradient(ellipse 32% 28% at 65% 25%, rgba(255,253,230,0.12) 0%, transparent 70%)",
-              "radial-gradient(ellipse 25% 35% at 50% 70%, rgba(255,223,100,0.10) 0%, transparent 70%)",
-            ].join(", "),
-          }}
-        />
       </motion.div>
 
       {/* Layer 4: Mandala — parallax */}
@@ -94,24 +68,12 @@ export default function BackgroundImage() {
           <img
             src="/images/bg-mandala-landscape.png"
             alt=""
-            className="absolute inset-0 w-full h-full object-cover"
+            className="shimmer-layer absolute inset-0 w-full h-full object-cover"
+            style={{ animation: "shimmer-mandala 25s ease-in-out infinite" }}
             loading="eager"
             decoding="async"
           />
         </picture>
-        <div
-          className="shimmer-overlay absolute pointer-events-none"
-          style={{
-            inset: "-20%",
-            mixBlendMode: "screen",
-            willChange: "transform, opacity",
-            animation: "shimmer-glow-mandala 25s ease-in-out infinite",
-            background: [
-              "radial-gradient(ellipse 40% 40% at 45% 45%, rgba(255,215,0,0.10) 0%, transparent 70%)",
-              "radial-gradient(ellipse 35% 35% at 60% 55%, rgba(204,168,0,0.07) 0%, transparent 70%)",
-            ].join(", "),
-          }}
-        />
       </motion.div>
     </div>
   );
