@@ -203,7 +203,7 @@ export default function LightboxWrapper({
             close={onClose}
             slides={slides}
             plugins={[Video, Counter]}
-            video={{ controls: true, playsInline: true, autoPlay: true }}
+            video={{ controls: false, playsInline: true, autoPlay: true, loop: true }}
             controller={{
               closeOnBackdropClick: true,
               closeOnPullDown: true,

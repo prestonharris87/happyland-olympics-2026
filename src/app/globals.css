@@ -87,6 +87,11 @@ html::-webkit-scrollbar {
   100% { transform: scale(1); }
 }
 
+/* Lightbox video: click to pause/play, no native controls */
+.yarl__slide video {
+  cursor: pointer;
+}
+
 /* Counter plugin style overrides */
 .yarl__counter {
   font-family: var(--font-body), system-ui, sans-serif;
