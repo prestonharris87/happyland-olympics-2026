@@ -164,6 +164,56 @@ function NavigationHint({ onDismiss }: { onDismiss: () => void }) {
   );
 }
 
+function EngagementBar({ publicId }: { publicId: string }) {
+  const [keyboardOffset, setKeyboardOffset] = useState(0);
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+
+    const onResize = () => {
+      // keyboard height = full window height - visible viewport height - viewport offset
+      const offset = window.innerHeight - vv.height - vv.offsetTop;
+      setKeyboardOffset(Math.max(0, offset));
+    };
+
+    vv.addEventListener("resize", onResize);
+    vv.addEventListener("scroll", onResize);
+    return () => {
+      vv.removeEventListener("resize", onResize);
+      vv.removeEventListener("scroll", onResize);
+    };
+  }, []);
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        bottom: keyboardOffset,
+        left: 0,
+        right: 0,
+        zIndex: 20,
+        display: "flex",
+        justifyContent: "center",
+        pointerEvents: "none",
+        transition: "bottom 0.1s ease-out",
+      }}
+    >
+      <div
+        className="flex items-center gap-3 p-4 pb-6 max-w-lg w-full"
+        style={{ pointerEvents: "auto" }}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <HeartButton mediaId={publicId} />
+        <div className="flex-1 min-w-0">
+          <CommentOverlay mediaId={publicId} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function LightboxWrapper({
   open,
   slides,
@@ -229,30 +279,7 @@ export default function LightboxWrapper({
                     <NavigationHint onDismiss={dismissHint} />
                   )}
                   {currentPublicId && (
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        zIndex: 20,
-                        display: "flex",
-                        justifyContent: "center",
-                        pointerEvents: "none",
-                      }}
-                    >
-                      <div
-                        className="flex items-center gap-3 p-4 pb-6 max-w-lg w-full"
-                        style={{ pointerEvents: "auto" }}
-                        onClick={(e) => e.stopPropagation()}
-                        onKeyDown={(e) => e.stopPropagation()}
-                      >
-                        <HeartButton mediaId={currentPublicId} />
-                        <div className="flex-1 min-w-0">
-                          <CommentOverlay mediaId={currentPublicId} />
-                        </div>
-                      </div>
-                    </div>
+                    <EngagementBar publicId={currentPublicId} />
                   )}
                 </>
               ),
