@@ -1,10 +1,9 @@
 "use client";
 
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import Lightbox, { Slide } from "yet-another-react-lightbox";
 import Video from "yet-another-react-lightbox/plugins/video";
 import Counter from "yet-another-react-lightbox/plugins/counter";
-import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/counter.css";
 import { motion, AnimatePresence } from "framer-motion";
@@ -84,6 +83,193 @@ function BlurSlide({
           transition: "opacity 300ms ease-in",
         }}
       />
+    </div>
+  );
+}
+
+function PinchZoomSlide({ children }: { children: React.ReactNode }) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const s = useRef({
+    scale: 1,
+    x: 0,
+    y: 0,
+    pinching: false,
+    panning: false,
+    initDist: 0,
+    initScale: 1,
+    initCX: 0,
+    initCY: 0,
+    initX: 0,
+    initY: 0,
+    panSX: 0,
+    panSY: 0,
+    panOX: 0,
+    panOY: 0,
+    lastTap: 0,
+  });
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const st = s.current;
+
+    const apply = () => {
+      if (!contentRef.current) return;
+      contentRef.current.style.transform =
+        st.scale > 1
+          ? `scale(${st.scale}) translate(${st.x}px, ${st.y}px)`
+          : "";
+    };
+
+    const animateTo = () => {
+      if (!contentRef.current) return;
+      contentRef.current.style.transition = "transform 200ms ease-out";
+      apply();
+      const onEnd = () => {
+        if (contentRef.current) contentRef.current.style.transition = "";
+      };
+      contentRef.current.addEventListener("transitionend", onEnd, {
+        once: true,
+      });
+    };
+
+    const dist = (a: Touch, b: Touch) =>
+      Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+
+    const clamp = () => {
+      const r = el.getBoundingClientRect();
+      const mx = Math.max(0, (r.width * (st.scale - 1)) / (2 * st.scale));
+      const my = Math.max(0, (r.height * (st.scale - 1)) / (2 * st.scale));
+      st.x = Math.max(-mx, Math.min(mx, st.x));
+      st.y = Math.max(-my, Math.min(my, st.y));
+    };
+
+    const onStart = (e: TouchEvent) => {
+      // Two-finger pinch start
+      if (e.touches.length >= 2) {
+        e.preventDefault();
+        st.pinching = true;
+        st.panning = false;
+        st.initDist = dist(e.touches[0], e.touches[1]);
+        st.initScale = st.scale;
+        st.initCX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        st.initCY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        st.initX = st.x;
+        st.initY = st.y;
+        return;
+      }
+
+      if (e.touches.length === 1) {
+        // Double-tap detection
+        const now = Date.now();
+        if (now - st.lastTap < 300) {
+          e.preventDefault();
+          st.lastTap = 0;
+          if (st.scale > 1) {
+            st.scale = 1;
+            st.x = 0;
+            st.y = 0;
+          } else {
+            st.scale = 2.5;
+            st.x = 0;
+            st.y = 0;
+          }
+          animateTo();
+          return;
+        }
+        st.lastTap = now;
+
+        // Start pan if zoomed
+        if (st.scale > 1) {
+          e.preventDefault();
+          st.panning = true;
+          st.panSX = e.touches[0].clientX;
+          st.panSY = e.touches[0].clientY;
+          st.panOX = st.x;
+          st.panOY = st.y;
+        }
+      }
+    };
+
+    const onMove = (e: TouchEvent) => {
+      if (st.pinching && e.touches.length >= 2) {
+        e.preventDefault();
+        const d = dist(e.touches[0], e.touches[1]);
+        st.scale = Math.max(1, Math.min(5, st.initScale * (d / st.initDist)));
+        const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        st.x = st.initX + (cx - st.initCX) / st.scale;
+        st.y = st.initY + (cy - st.initCY) / st.scale;
+        clamp();
+        apply();
+        return;
+      }
+      if (st.panning && e.touches.length === 1) {
+        e.preventDefault();
+        st.x = st.panOX + (e.touches[0].clientX - st.panSX) / st.scale;
+        st.y = st.panOY + (e.touches[0].clientY - st.panSY) / st.scale;
+        clamp();
+        apply();
+      }
+    };
+
+    const onEnd = (e: TouchEvent) => {
+      if (st.pinching) {
+        if (e.touches.length < 2) {
+          st.pinching = false;
+          // Snap back to 1x if barely zoomed
+          if (st.scale < 1.05) {
+            st.scale = 1;
+            st.x = 0;
+            st.y = 0;
+            animateTo();
+          } else if (e.touches.length === 1) {
+            // Transition remaining finger to pan
+            st.panning = true;
+            st.panSX = e.touches[0].clientX;
+            st.panSY = e.touches[0].clientY;
+            st.panOX = st.x;
+            st.panOY = st.y;
+          }
+        }
+        e.preventDefault();
+        return;
+      }
+      if (st.panning && e.touches.length === 0) {
+        st.panning = false;
+      }
+    };
+
+    el.addEventListener("touchstart", onStart, { passive: false });
+    el.addEventListener("touchmove", onMove, { passive: false });
+    el.addEventListener("touchend", onEnd, { passive: false });
+
+    return () => {
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchmove", onMove);
+      el.removeEventListener("touchend", onEnd);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={wrapperRef}
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        ref={contentRef}
+        style={{ transformOrigin: "center center", willChange: "transform" }}
+      >
+        {children}
+      </div>
     </div>
   );
 }
@@ -369,29 +555,28 @@ export default function LightboxWrapper({
             index={index}
             close={onClose}
             slides={slides}
-            plugins={[Video, Counter, Zoom]}
+            plugins={[Video, Counter]}
             video={{ controls: false, playsInline: true, autoPlay: true, loop: true }}
             controller={{
               closeOnBackdropClick: true,
               closeOnPullDown: true,
             }}
             counter={{ separator: " / " }}
-            zoom={{
-              maxZoomPixelRatio: 3,
-              zoomInMultiplier: 2,
-              doubleClickMaxStops: 2,
-              scrollToZoom: false,
-            }}
-            animation={{ zoom: 300 }}
             className="yarl-large-icons"
             on={{
               view: ({ index }) => setCurrentIndex(index),
             }}
             render={{
-              slide: ({ slide, rect }) => (
-                <BlurSlide slide={slide as EngagedSlide} rect={rect} />
-              ),
-              buttonZoom: () => null,
+              slide: ({ slide, rect }) => {
+                const engaged = slide as EngagedSlide;
+                if (!("src" in slide) || !slide.src || !engaged.blurSrc)
+                  return undefined;
+                return (
+                  <PinchZoomSlide key={engaged.publicId}>
+                    <BlurSlide slide={engaged} rect={rect} />
+                  </PinchZoomSlide>
+                );
+              },
               controls: () => (
                 <>
                   {!hintSeen && (
