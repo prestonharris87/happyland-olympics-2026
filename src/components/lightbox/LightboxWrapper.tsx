@@ -221,21 +221,36 @@ export default function LightboxWrapper({
                 !hintSeen ? (
                   <NavigationHint onDismiss={dismissHint} />
                 ) : null,
-              slideFooter: () =>
-                currentPublicId ? (
-                  <div
-                    className="flex items-center gap-3 p-4 w-full"
-                    onClick={(e) => e.stopPropagation()}
-                    onKeyDown={(e) => e.stopPropagation()}
-                  >
-                    <HeartButton mediaId={currentPublicId} />
-                    <div className="flex-1 min-w-0">
-                      <CommentOverlay mediaId={currentPublicId} />
-                    </div>
-                  </div>
-                ) : null,
             }}
           />
+
+          {/* Engagement overlay — positioned at bottom center, above the lightbox */}
+          {currentPublicId && (
+            <div
+              style={{
+                position: "fixed",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 9998,
+                display: "flex",
+                justifyContent: "center",
+                pointerEvents: "none",
+              }}
+            >
+              <div
+                className="flex items-center gap-3 p-4 pb-6 max-w-lg w-full"
+                style={{ pointerEvents: "auto" }}
+                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
+              >
+                <HeartButton mediaId={currentPublicId} />
+                <div className="flex-1 min-w-0">
+                  <CommentOverlay mediaId={currentPublicId} />
+                </div>
+              </div>
+            </div>
+          )}
         </motion.div>
       )}
     </AnimatePresence>
