@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { validPhotos, getAssetNumber, type GalleryPhoto } from "@/lib/gallery-data";
 import { weightedRandomSubset } from "@/lib/weighted-shuffle";
@@ -106,26 +106,64 @@ function GalleryInner() {
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [shuffleKey, setShuffleKey] = useState(0);
   const [shuffleCount, setShuffleCount] = useState(0);
+  const seenIds = useRef<Set<string>>(new Set());
+  const initialWeightedDone = useRef(false);
 
-  // Initial random subset
+  // Initial random subset (before engagement data loads)
   useEffect(() => {
-    setPhotos(getRandomSubset(validPhotos, DISPLAY_COUNT));
+    const initial = getRandomSubset(validPhotos, DISPLAY_COUNT);
+    setPhotos(initial);
+    for (const p of initial) seenIds.current.add(p.publicId);
   }, []);
 
+  // Re-shuffle with weighted bias once engagement data arrives (first load only)
+  useEffect(() => {
+    if (!loaded || initialWeightedDone.current) return;
+    const hasEngagement =
+      Object.keys(heartCounts).length + Object.keys(commentCounts).length > 0;
+    if (!hasEngagement) return;
+
+    initialWeightedDone.current = true;
+    seenIds.current.clear();
+    const weighted = weightedRandomSubset(
+      validPhotos,
+      DISPLAY_COUNT,
+      heartCounts,
+      commentCounts,
+      0
+    );
+    for (const p of weighted) seenIds.current.add(p.publicId);
+    setPhotos(weighted);
+    setShuffleKey((k) => k + 1);
+  }, [loaded, heartCounts, commentCounts]);
+
   const handleShuffle = useCallback(() => {
-    if (loaded && Object.keys(heartCounts).length + Object.keys(commentCounts).length > 0) {
-      setPhotos(
-        weightedRandomSubset(
-          validPhotos,
-          DISPLAY_COUNT,
-          heartCounts,
-          commentCounts,
-          shuffleCount
-        )
+    const hasEngagement =
+      loaded &&
+      Object.keys(heartCounts).length + Object.keys(commentCounts).length > 0;
+
+    let next: GalleryPhoto[];
+    if (hasEngagement) {
+      next = weightedRandomSubset(
+        validPhotos,
+        DISPLAY_COUNT,
+        heartCounts,
+        commentCounts,
+        shuffleCount,
+        seenIds.current
       );
     } else {
-      setPhotos(getRandomSubset(validPhotos, DISPLAY_COUNT));
+      // Progressive exclusion with plain random
+      let pool = validPhotos.filter((p) => !seenIds.current.has(p.publicId));
+      if (pool.length < DISPLAY_COUNT) {
+        seenIds.current.clear();
+        pool = validPhotos;
+      }
+      next = getRandomSubset(pool, DISPLAY_COUNT);
     }
+
+    for (const p of next) seenIds.current.add(p.publicId);
+    setPhotos(next);
     setShuffleCount((c) => c + 1);
     setShuffleKey((k) => k + 1);
   }, [loaded, heartCounts, commentCounts, shuffleCount]);

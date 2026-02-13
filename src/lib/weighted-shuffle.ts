@@ -5,13 +5,28 @@ export function weightedRandomSubset(
   count: number,
   heartCounts: Record<string, number>,
   commentCounts: Record<string, number>,
-  shuffleCount: number
+  shuffleCount: number,
+  excludeIds?: Set<string>
 ): GalleryPhoto[] {
-  const biasFactor = 1 / (shuffleCount + 1);
-  const items = photos.map((photo) => {
+  // Filter out already-seen items
+  let pool = excludeIds
+    ? photos.filter((p) => !excludeIds.has(p.publicId))
+    : photos;
+
+  // If not enough unseen items, use full pool
+  if (pool.length < count) {
+    pool = photos;
+  }
+
+  // Bias diminishes: 10x on first shuffle, 5x on second, ~3.3x on third, etc.
+  const biasFactor = 10 / (shuffleCount + 1);
+
+  const items = pool.map((photo) => {
     const hearts = heartCounts[photo.publicId] || 0;
     const comments = commentCounts[photo.publicId] || 0;
-    const weight = 1 + (hearts + comments) * biasFactor;
+    const engagement = hearts * 3 + comments * 2;
+    // Engaged items get a strong multiplier; unengaged stay at 1
+    const weight = engagement > 0 ? 1 + engagement * biasFactor : 1;
     return { photo, weight };
   });
 
