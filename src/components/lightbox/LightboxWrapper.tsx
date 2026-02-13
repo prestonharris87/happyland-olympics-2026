@@ -4,6 +4,7 @@ import { useCallback, useState, useEffect } from "react";
 import Lightbox, { Slide } from "yet-another-react-lightbox";
 import Video from "yet-another-react-lightbox/plugins/video";
 import Counter from "yet-another-react-lightbox/plugins/counter";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/counter.css";
 import { motion, AnimatePresence } from "framer-motion";
@@ -144,7 +145,7 @@ function NavigationHint({ onDismiss }: { onDismiss: () => void }) {
         }}
       >
         {isMobile
-          ? "Swipe to navigate"
+          ? "Swipe to navigate \u00b7 Pinch to zoom"
           : "Use \u2190 \u2192 arrow keys to navigate"}
       </span>
       <svg
@@ -185,49 +186,42 @@ function CommentHint({ onDismiss }: { onDismiss: () => void }) {
       onClick={dismiss}
       style={{
         position: "absolute",
-        bottom: 80,
-        left: 0,
-        right: 0,
-        zIndex: 9998,
+        inset: 0,
+        zIndex: 9999,
         display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         justifyContent: "center",
-        cursor: "pointer",
+        gap: "1rem",
+        background: "rgba(0,0,0,0.5)",
         opacity: visible ? 1 : 0,
         transition: "opacity 400ms ease-out",
-        pointerEvents: visible ? "auto" : "none",
+        cursor: "pointer",
       }}
     >
-      <div
+      <span
         style={{
-          position: "relative",
-          background: "rgba(0,0,0,0.75)",
-          backdropFilter: "blur(8px)",
-          borderRadius: "12px",
-          padding: "10px 18px",
           color: "white",
-          fontSize: "14px",
+          fontSize: "16px",
           fontFamily: "var(--font-body), system-ui, sans-serif",
           userSelect: "none",
-          whiteSpace: "nowrap",
-          animation: "comment-hint-float 2s ease-in-out infinite",
         }}
       >
         Add anonymous comments here
-        {/* Downward-pointing arrow */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: -8,
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: 0,
-            height: 0,
-            borderLeft: "8px solid transparent",
-            borderRight: "8px solid transparent",
-            borderTop: "8px solid rgba(0,0,0,0.75)",
-          }}
-        />
-      </div>
+      </span>
+      <svg
+        width="32"
+        height="32"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="white"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{ animation: "hint-bounce-down 1s ease-in-out infinite" }}
+      >
+        <polyline points="6 9 12 15 18 9" />
+      </svg>
     </div>
   );
 }
