@@ -24,7 +24,7 @@ export function weightedRandomSubset(
   const items = pool.map((photo) => {
     const hearts = heartCounts[photo.publicId] || 0;
     const comments = commentCounts[photo.publicId] || 0;
-    const engagement = hearts * 3 + comments * 2;
+    const engagement = hearts * 2 + comments * 4;
     // Engaged items get a strong multiplier; unengaged stay at 1
     const weight = engagement > 0 ? 1 + engagement * biasFactor : 1;
     return { photo, weight };
