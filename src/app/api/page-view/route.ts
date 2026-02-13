@@ -3,22 +3,52 @@ import { getSupabase } from "@/lib/supabase";
 import { ensureUserIdentity } from "@/lib/user-identity";
 
 export async function POST(request: NextRequest) {
-  const user = await ensureUserIdentity();
   const supabase = getSupabase();
 
   let body: Record<string, unknown> = {};
   try {
     body = await request.json();
   } catch {
-    // No body or invalid JSON — that's fine, we still log the view
+    // No body or invalid JSON
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
+
+  // ── Duration update (has id + durationMs, no screenWidth) ──
+  if (typeof body.id === "string" && typeof body.durationMs === "number") {
+    const update: Record<string, unknown> = {};
+    if (body.durationMs > 0) {
+      update.duration_ms = Math.round(body.durationMs as number);
+    }
+    if (typeof body.engagedDurationMs === "number" && body.engagedDurationMs > 0) {
+      update.engaged_duration_ms = Math.round(body.engagedDurationMs as number);
+    }
+
+    if (Object.keys(update).length === 0) {
+      return NextResponse.json({ ok: true });
+    }
+
+    const { error } = await supabase
+      .from("page_views")
+      .update(update)
+      .eq("id", body.id);
+
+    if (error) {
+      console.error("Failed to update page view duration:", error);
+      return NextResponse.json({ error: "Failed to update" }, { status: 500 });
+    }
+
+    return NextResponse.json({ ok: true });
+  }
+
+  // ── New page view insert ──
+  const user = await ensureUserIdentity();
 
   const ip =
     request.headers.get("x-real-ip") ||
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     null;
 
-  const { error } = await supabase.from("page_views").insert({
+  const row: Record<string, unknown> = {
     user_id: user.id,
     username: user.username,
     path: typeof body.path === "string" ? body.path : "/",
@@ -39,7 +69,14 @@ export async function POST(request: NextRequest) {
     color_scheme: typeof body.colorScheme === "string" ? body.colorScheme : null,
     connection_type: typeof body.connectionType === "string" ? body.connectionType : null,
     session_id: typeof body.sessionId === "string" ? body.sessionId : null,
-  });
+  };
+
+  // Client supplies the row ID so it can send duration updates later
+  if (typeof body.id === "string") {
+    row.id = body.id;
+  }
+
+  const { error } = await supabase.from("page_views").insert(row);
 
   if (error) {
     console.error("Failed to insert page view:", error);
