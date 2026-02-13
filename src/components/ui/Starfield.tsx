@@ -105,8 +105,10 @@ function drawSpike(
 }
 
 export default function Starfield() {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const starsRef = useRef<Star[]>([]);
+  const dimsRef = useRef({ w: 0, h: 0 });
   const rafRef = useRef<number>(0);
 
   useEffect(() => {
@@ -120,9 +122,12 @@ export default function Starfield() {
     );
 
     function resize() {
+      const container = containerRef.current;
+      if (!container) return;
       const dpr = window.devicePixelRatio || 1;
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      dimsRef.current = { w, h };
       canvas!.width = w * dpr;
       canvas!.height = h * dpr;
       canvas!.style.width = w + "px";
@@ -141,8 +146,7 @@ export default function Starfield() {
     window.addEventListener("resize", onResize);
 
     function render(time: number) {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+      const { w, h } = dimsRef.current;
       const stars = starsRef.current;
       const t = time / 1000;
 
@@ -255,7 +259,9 @@ export default function Starfield() {
 
   return (
     <div
-      className="fixed inset-0 z-0 overflow-hidden pointer-events-none"
+      ref={containerRef}
+      className="fixed inset-x-0 top-0 z-0 overflow-hidden pointer-events-none"
+      style={{ height: "100lvh" }}
       aria-hidden="true"
     >
       <canvas ref={canvasRef} className="absolute inset-0" />

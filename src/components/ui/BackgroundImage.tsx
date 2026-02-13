@@ -9,7 +9,11 @@ export default function BackgroundImage() {
   const mandalaY = useParallaxY(BG_PARALLAX.mandala);
 
   return (
-    <div className="fixed inset-0 z-[-2] overflow-hidden" aria-hidden="true">
+    <div
+      className="fixed inset-x-0 top-0 z-[-2] overflow-hidden"
+      style={{ height: "100lvh" }}
+      aria-hidden="true"
+    >
       {/* Layer 1: Base gradient — fixed, no parallax */}
       <picture>
         <source media="(orientation: portrait)" srcSet="/images/bg-gradient-portrait.webp" type="image/webp" />
