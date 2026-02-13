@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Bell } from "lucide-react";
+import { Bell, CalendarHeart } from "lucide-react";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 import TextAlertSignup from "@/components/sections/TextAlertSignup";
 
@@ -20,14 +20,16 @@ export default function AddToCalendar() {
         {/* Save the Date card */}
         <div className="bg-white/5 backdrop-blur-md border border-gold/30 rounded-2xl p-8 sm:p-12 h-full flex flex-col justify-center text-center">
           <AnimatedSection>
-            <h2 className="font-heading text-4xl sm:text-5xl font-black uppercase text-gold mb-2 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]">
+            <div className="flex justify-center mb-4">
+              <div className="w-14 h-14 rounded-full bg-gold/20 border border-gold/40 flex items-center justify-center">
+                <CalendarHeart className="w-7 h-7 text-gold" />
+              </div>
+            </div>
+            <h2 className="font-heading text-3xl sm:text-4xl font-black uppercase text-gold mb-2 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]">
               Save the Date
             </h2>
-            <p className="font-body text-xl sm:text-2xl font-semibold text-white mb-4">
+            <p className="font-body text-xl sm:text-2xl font-semibold text-white mb-8">
               June 12–14, 2026
-            </p>
-            <p className="font-body text-cream/50 mb-10 text-lg">
-              Don&apos;t miss out — add it to your calendar now.
             </p>
           </AnimatedSection>
 
@@ -48,6 +50,7 @@ export default function AddToCalendar() {
                 hideBackground
                 lightMode="dark"
                 size="5"
+                styleDark="--btn-background: #FFD700cc; --btn-background-hover: #FFD700; --btn-text: #0B1426; --btn-text-hover: #0B1426;"
               />
             </div>
           </AnimatedSection>
@@ -64,7 +67,7 @@ export default function AddToCalendar() {
             <h2 className="font-heading text-3xl sm:text-4xl font-black uppercase text-gold mb-2 drop-shadow-[0_0_20px_rgba(255,215,0,0.2)]">
               Text Alerts
             </h2>
-            <p className="font-body text-cream/50 mb-8 text-lg">
+            <p className="font-body text-xl sm:text-2xl font-semibold text-white mb-8">
               Get notified when tickets drop
             </p>
             <TextAlertSignup />
