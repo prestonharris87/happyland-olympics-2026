@@ -191,8 +191,8 @@ function CommentHint({ onDismiss }: { onDismiss: () => void }) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        gap: "1rem",
+        justifyContent: "flex-end",
+        paddingBottom: "100px",
         background: "rgba(0,0,0,0.5)",
         opacity: visible ? 1 : 0,
         transition: "opacity 400ms ease-out",
@@ -205,6 +205,7 @@ function CommentHint({ onDismiss }: { onDismiss: () => void }) {
           fontSize: "16px",
           fontFamily: "var(--font-body), system-ui, sans-serif",
           userSelect: "none",
+          marginBottom: "8px",
         }}
       >
         Add anonymous comments here
