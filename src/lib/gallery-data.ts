@@ -1363,3 +1363,8 @@ export const galleryPhotos: GalleryPhoto[] = [
 export const validPhotos = galleryPhotos.filter(
   (p) => p.width > 640 && p.height > 640
 );
+
+export function getAssetNumber(publicId: string): number {
+  const index = validPhotos.findIndex((p) => p.publicId === publicId);
+  return index + 1;
+}

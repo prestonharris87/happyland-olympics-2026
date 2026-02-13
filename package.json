@@ -10,9 +10,11 @@
     "sync-gallery": "npx tsx scripts/sync-gallery.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.95.3",
     "add-to-calendar-button-react": "^2.13.5",
     "cloudinary": "^2.9.0",
     "framer-motion": "^12.34.0",
+    "lucide-react": "^0.563.0",
     "next": "16.1.6",
     "next-cloudinary": "^6.17.5",
     "react": "19.2.3",
