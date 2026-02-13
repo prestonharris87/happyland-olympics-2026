@@ -1,19 +1,27 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 const ADJECTIVES = [
   "crazy", "wild", "sneaky", "bold", "jolly", "mighty", "swift", "clever",
   "brave", "dizzy", "fierce", "gentle", "happy", "icy", "keen", "lazy",
   "noble", "proud", "quick", "rowdy", "silly", "tiny", "vivid", "witty",
+  "zany", "grumpy", "spicy", "cosmic", "salty", "chunky", "funky", "shady",
+  "peppy", "snappy", "gritty", "fluffy", "crispy", "stormy", "dusty", "rusty",
+  "breezy", "cheeky", "plucky", "scrappy", "feisty", "nifty", "wacky", "lumpy",
 ];
 
 const ANIMALS = [
   "coyote", "eagle", "falcon", "gopher", "hawk", "jaguar", "koala",
   "lemur", "moose", "otter", "panda", "quail", "raccoon", "shark",
   "tiger", "urchin", "viper", "walrus", "fox", "bear", "wolf", "lynx",
+  "badger", "bison", "crane", "donkey", "ferret", "gecko", "heron",
+  "ibex", "jackal", "kiwi", "lobster", "marmot", "newt", "ocelot",
+  "parrot", "rabbit", "squid", "toucan", "wombat", "yak", "zebra", "alpaca",
 ];
 
-function generateUsername(): string {
-  const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
+function generateUsername(region?: string | null): string {
+  const adj = region === "CA"
+    ? "gay"
+    : ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
   const animal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
   return `${adj} ${animal}`;
 }
@@ -35,9 +43,12 @@ export async function ensureUserIdentity(): Promise<UserIdentity> {
     }
   }
 
+  const headerStore = await headers();
+  const region = headerStore.get("x-vercel-ip-country-region");
+
   const identity: UserIdentity = {
     id: crypto.randomUUID(),
-    username: generateUsername(),
+    username: generateUsername(region),
   };
 
   cookieStore.set("hl-user", JSON.stringify(identity), {

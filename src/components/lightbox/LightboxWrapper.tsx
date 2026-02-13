@@ -164,6 +164,74 @@ function NavigationHint({ onDismiss }: { onDismiss: () => void }) {
   );
 }
 
+function CommentHint({ onDismiss }: { onDismiss: () => void }) {
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVisible(false);
+      setTimeout(onDismiss, 400);
+    }, 3500);
+    return () => clearTimeout(timer);
+  }, [onDismiss]);
+
+  const dismiss = () => {
+    setVisible(false);
+    setTimeout(onDismiss, 400);
+  };
+
+  return (
+    <div
+      onClick={dismiss}
+      style={{
+        position: "absolute",
+        bottom: 80,
+        left: 0,
+        right: 0,
+        zIndex: 9998,
+        display: "flex",
+        justifyContent: "center",
+        cursor: "pointer",
+        opacity: visible ? 1 : 0,
+        transition: "opacity 400ms ease-out",
+        pointerEvents: visible ? "auto" : "none",
+      }}
+    >
+      <div
+        style={{
+          position: "relative",
+          background: "rgba(0,0,0,0.75)",
+          backdropFilter: "blur(8px)",
+          borderRadius: "12px",
+          padding: "10px 18px",
+          color: "white",
+          fontSize: "14px",
+          fontFamily: "var(--font-body), system-ui, sans-serif",
+          userSelect: "none",
+          whiteSpace: "nowrap",
+          animation: "comment-hint-float 2s ease-in-out infinite",
+        }}
+      >
+        Add anonymous comments here
+        {/* Downward-pointing arrow */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: -8,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: 0,
+            height: 0,
+            borderLeft: "8px solid transparent",
+            borderRight: "8px solid transparent",
+            borderTop: "8px solid rgba(0,0,0,0.75)",
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
 function EngagementBar({ publicId }: { publicId: string }) {
   const [keyboardOffset, setKeyboardOffset] = useState(0);
 
@@ -221,6 +289,8 @@ export default function LightboxWrapper({
   onClose,
 }: LightboxWrapperProps) {
   const [hintSeen, setHintSeen] = useState(true);
+  const [commentHintSeen, setCommentHintSeen] = useState(true);
+  const [showCommentHint, setShowCommentHint] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(index);
   const [viewportOffset, setViewportOffset] = useState(0);
 
@@ -253,11 +323,32 @@ export default function LightboxWrapper({
 
   useEffect(() => {
     setHintSeen(localStorage.getItem("lightbox-hint-seen") === "true");
+    setCommentHintSeen(
+      localStorage.getItem("lightbox-comment-hint-seen") === "true"
+    );
   }, []);
 
   const dismissHint = useCallback(() => {
     setHintSeen(true);
     localStorage.setItem("lightbox-hint-seen", "true");
+    // After nav hint dismisses, show comment hint if not yet seen
+    if (localStorage.getItem("lightbox-comment-hint-seen") !== "true") {
+      setTimeout(() => setShowCommentHint(true), 300);
+    }
+  }, []);
+
+  // If nav hint was already seen, show comment hint immediately on open
+  useEffect(() => {
+    if (open && hintSeen && !commentHintSeen) {
+      const timer = setTimeout(() => setShowCommentHint(true), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [open, hintSeen, commentHintSeen]);
+
+  const dismissCommentHint = useCallback(() => {
+    setShowCommentHint(false);
+    setCommentHintSeen(true);
+    localStorage.setItem("lightbox-comment-hint-seen", "true");
   }, []);
 
   const currentSlide = slides[currentIndex] as EngagedSlide | undefined;
@@ -302,6 +393,9 @@ export default function LightboxWrapper({
                 <>
                   {!hintSeen && (
                     <NavigationHint onDismiss={dismissHint} />
+                  )}
+                  {showCommentHint && (
+                    <CommentHint onDismiss={dismissCommentHint} />
                   )}
                   {currentPublicId && (
                     <EngagementBar publicId={currentPublicId} />

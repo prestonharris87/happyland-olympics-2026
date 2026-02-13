@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSupabase } from "@/lib/supabase";
 import { normalizeUSPhone } from "@/lib/phone";
+import { ensureUserIdentity } from "@/lib/user-identity";
 
 export async function POST(request: NextRequest) {
   const supabase = getSupabase();
@@ -26,11 +27,15 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const user = await ensureUserIdentity();
+
   const { error } = await supabase
     .from("text_alert_subscriptions")
     .insert({
       phone: phone.trim(),
       phone_e164: phoneE164,
+      user_id: user.id,
+      username: user.username,
     });
 
   if (error) {
