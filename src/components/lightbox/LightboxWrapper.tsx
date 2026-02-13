@@ -222,10 +222,41 @@ export default function LightboxWrapper({
 }: LightboxWrapperProps) {
   const [hintSeen, setHintSeen] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(index);
+  const [viewportOffset, setViewportOffset] = useState(0);
 
   useEffect(() => {
     setCurrentIndex(index);
   }, [index]);
+
+  // Lock body scroll and track viewport offset when lightbox is open
+  useEffect(() => {
+    if (!open) return;
+
+    const scrollY = window.scrollY;
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = "0";
+    document.body.style.right = "0";
+    document.body.style.overflow = "hidden";
+
+    const vv = window.visualViewport;
+    const onViewportChange = () => {
+      if (vv) setViewportOffset(vv.offsetTop);
+    };
+    vv?.addEventListener("resize", onViewportChange);
+    vv?.addEventListener("scroll", onViewportChange);
+
+    return () => {
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.overflow = "";
+      window.scrollTo(0, scrollY);
+      vv?.removeEventListener("resize", onViewportChange);
+      vv?.removeEventListener("scroll", onViewportChange);
+    };
+  }, [open]);
 
   useEffect(() => {
     setHintSeen(localStorage.getItem("lightbox-hint-seen") === "true");
@@ -251,6 +282,7 @@ export default function LightboxWrapper({
             position: "fixed",
             inset: 0,
             zIndex: 50,
+            transform: `translateY(${-viewportOffset}px)`,
           }}
         >
           <Lightbox
