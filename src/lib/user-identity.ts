@@ -18,11 +18,22 @@ const ANIMALS = [
   "parrot", "rabbit", "squid", "toucan", "wombat", "yak", "zebra", "alpaca",
 ];
 
+const MI_ANIMALS = [
+  "bunny", "pony", "kitten", "duckling", "fawn", "lamb", "piglet",
+  "butterfly", "ladybug", "hummingbird", "seahorse", "chinchilla",
+  "hamster", "puppy", "goldfish", "lovebird", "sugar glider", "hedgehog",
+];
+
 function generateUsername(region?: string | null): string {
   const adj = region === "CA"
     ? "gay"
+    : region === "MI"
+    ? "testosterone"
+    : region === "NY"
+    ? "evil"
     : ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
-  const animal = ANIMALS[Math.floor(Math.random() * ANIMALS.length)];
+  const animalList = region === "MI" ? MI_ANIMALS : ANIMALS;
+  const animal = animalList[Math.floor(Math.random() * animalList.length)];
   return `${adj} ${animal}`;
 }
 

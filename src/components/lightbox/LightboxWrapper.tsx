@@ -368,13 +368,20 @@ export default function LightboxWrapper({
             index={index}
             close={onClose}
             slides={slides}
-            plugins={[Video, Counter]}
+            plugins={[Video, Counter, Zoom]}
             video={{ controls: false, playsInline: true, autoPlay: true, loop: true }}
             controller={{
               closeOnBackdropClick: true,
               closeOnPullDown: true,
             }}
             counter={{ separator: " / " }}
+            zoom={{
+              maxZoomPixelRatio: 3,
+              zoomInMultiplier: 2,
+              doubleClickMaxStops: 2,
+              scrollToZoom: false,
+            }}
+            animation={{ zoom: 300 }}
             className="yarl-large-icons"
             on={{
               view: ({ index }) => setCurrentIndex(index),
@@ -383,6 +390,7 @@ export default function LightboxWrapper({
               slide: ({ slide, rect }) => (
                 <BlurSlide slide={slide as EngagedSlide} rect={rect} />
               ),
+              buttonZoom: () => null,
               controls: () => (
                 <>
                   {!hintSeen && (
