@@ -223,7 +223,7 @@ export default function IntroVideo() {
       {/* Text overlay layer — z-[70], does NOT fade with video */}
       <div
         key="intro-text-layer"
-        className="fixed inset-0 z-[70] flex flex-col items-center justify-center px-4 pointer-events-none"
+        className="fixed top-0 left-0 right-0 min-h-screen z-[70] flex flex-col items-center justify-center px-4 pointer-events-none overflow-hidden"
       >
         <div className="text-center max-w-3xl mx-auto">
           {/* Countdown — cascades in after freeze */}
