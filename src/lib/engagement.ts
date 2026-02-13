@@ -51,3 +51,16 @@ export async function postComment(
   if (!res.ok) throw new Error("Failed to post comment");
   return res.json();
 }
+
+export async function subscribeTextAlerts(
+  phone: string
+): Promise<{ success: boolean; error?: string }> {
+  const res = await fetch("/api/text-alerts", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ phone }),
+  });
+  const data = await res.json();
+  if (!res.ok) return { success: false, error: data.error };
+  return data;
+}
