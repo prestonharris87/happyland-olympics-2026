@@ -20,7 +20,6 @@ export default function CommentOverlay({ mediaId }: CommentOverlayProps) {
   const [expanded, setExpanded] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const [showComments, setShowComments] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const prevMediaId = useRef(mediaId);
 
@@ -29,7 +28,6 @@ export default function CommentOverlay({ mediaId }: CommentOverlayProps) {
     if (mediaId !== prevMediaId.current) {
       setComments([]);
       setExpanded(false);
-      setShowComments(false);
       prevMediaId.current = mediaId;
     }
 
@@ -48,7 +46,6 @@ export default function CommentOverlay({ mediaId }: CommentOverlayProps) {
       setComments((prev) => [...prev, comment]);
       incrementCommentCount(mediaId);
       setInputValue("");
-      setShowComments(true);
     } catch {
       // Silently fail
     } finally {
@@ -56,8 +53,8 @@ export default function CommentOverlay({ mediaId }: CommentOverlayProps) {
     }
   }, [inputValue, submitting, mediaId, incrementCommentCount]);
 
-  const visibleComments = expanded ? comments : comments.slice(-3);
   const hasMore = comments.length > 3 && !expanded;
+  const visibleComments = expanded ? comments : comments.slice(-3);
 
   return (
     <div
@@ -66,40 +63,27 @@ export default function CommentOverlay({ mediaId }: CommentOverlayProps) {
       onClick={(e) => e.stopPropagation()}
       className="flex flex-col gap-2 max-w-sm w-full"
     >
-      {/* Toggle comments button */}
+      {/* Comments list — always visible when comments exist */}
       {comments.length > 0 && (
-        <button
-          onClick={() => setShowComments((v) => !v)}
-          className="flex items-center gap-1.5 text-white/60 hover:text-white/90 transition-colors text-sm font-body self-start"
-        >
-          <MessageCircle size={16} />
-          <span>
-            {showComments ? "Hide" : "View"} {comments.length} comment
-            {comments.length !== 1 ? "s" : ""}
-          </span>
-        </button>
-      )}
-
-      {/* Comments list */}
-      <AnimatePresence>
-        {showComments && comments.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="backdrop-blur-md bg-black/30 rounded-2xl p-3 space-y-2 overflow-hidden"
-          >
-            {hasMore && (
-              <button
-                onClick={() => setExpanded(true)}
-                className="text-xs text-white/50 hover:text-white/80 transition-colors font-body"
-              >
-                View all {comments.length} comments
-              </button>
-            )}
+        <div className="backdrop-blur-md bg-black/30 rounded-2xl p-3 space-y-2 overflow-hidden">
+          {hasMore && (
+            <button
+              onClick={() => setExpanded(true)}
+              className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white/80 transition-colors font-body"
+            >
+              <MessageCircle size={12} />
+              View all {comments.length} comments
+            </button>
+          )}
+          <AnimatePresence initial={false}>
             {visibleComments.map((comment) => (
-              <div key={comment.id} className="text-sm font-body">
+              <motion.div
+                key={comment.id}
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                transition={{ duration: 0.2 }}
+                className="text-sm font-body"
+              >
                 <span className="text-white/90">
                   &ldquo;{comment.body}&rdquo;
                 </span>
@@ -107,11 +91,20 @@ export default function CommentOverlay({ mediaId }: CommentOverlayProps) {
                   {" "}
                   &mdash; {comment.username}
                 </span>
-              </div>
+              </motion.div>
             ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </AnimatePresence>
+          {expanded && comments.length > 3 && (
+            <button
+              onClick={() => setExpanded(false)}
+              className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white/80 transition-colors font-body"
+            >
+              <MessageCircle size={12} />
+              Hide comments
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Comment input */}
       <div className="flex items-center gap-2">
