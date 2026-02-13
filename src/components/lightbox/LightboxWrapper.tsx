@@ -96,6 +96,8 @@ function PinchZoomSlide({ children }: { children: React.ReactNode }) {
     y: 0,
     pinching: false,
     panning: false,
+    wasPinching: false,
+    pointers: new Map<number, { x: number; y: number }>(),
     initDist: 0,
     initScale: 1,
     initCX: 0,
@@ -126,16 +128,29 @@ function PinchZoomSlide({ children }: { children: React.ReactNode }) {
       if (!contentRef.current) return;
       contentRef.current.style.transition = "transform 200ms ease-out";
       apply();
-      const onEnd = () => {
-        if (contentRef.current) contentRef.current.style.transition = "";
-      };
-      contentRef.current.addEventListener("transitionend", onEnd, {
-        once: true,
-      });
+      contentRef.current.addEventListener(
+        "transitionend",
+        () => {
+          if (contentRef.current) contentRef.current.style.transition = "";
+        },
+        { once: true }
+      );
     };
 
-    const dist = (a: Touch, b: Touch) =>
-      Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+    const ptrDist = () => {
+      const pts = [...st.pointers.values()];
+      if (pts.length < 2) return 0;
+      return Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+    };
+
+    const ptrCenter = () => {
+      const pts = [...st.pointers.values()];
+      if (pts.length < 2) return { x: 0, y: 0 };
+      return {
+        x: (pts[0].x + pts[1].x) / 2,
+        y: (pts[0].y + pts[1].y) / 2,
+      };
+    };
 
     const clamp = () => {
       const r = el.getBoundingClientRect();
@@ -145,110 +160,155 @@ function PinchZoomSlide({ children }: { children: React.ReactNode }) {
       st.y = Math.max(-my, Math.min(my, st.y));
     };
 
-    const onStart = (e: TouchEvent) => {
-      // Two-finger pinch start
-      if (e.touches.length >= 2) {
-        e.preventDefault();
+    // --- Pointer events: stopPropagation prevents YARL from seeing them ---
+
+    const onDown = (e: PointerEvent) => {
+      // Fresh interaction — clear stale flags
+      if (st.pointers.size === 0) st.wasPinching = false;
+
+      st.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      if (st.pointers.size >= 2) {
+        // Pinch start — stop 2nd pointerdown from reaching YARL
+        e.stopPropagation();
         st.pinching = true;
         st.panning = false;
-        st.initDist = dist(e.touches[0], e.touches[1]);
+        st.wasPinching = false;
+        st.initDist = ptrDist();
         st.initScale = st.scale;
-        st.initCX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-        st.initCY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        const c = ptrCenter();
+        st.initCX = c.x;
+        st.initCY = c.y;
         st.initX = st.x;
         st.initY = st.y;
         return;
       }
 
-      if (e.touches.length === 1) {
-        // Double-tap detection
-        const now = Date.now();
-        if (now - st.lastTap < 300) {
-          e.preventDefault();
-          st.lastTap = 0;
-          if (st.scale > 1) {
-            st.scale = 1;
-            st.x = 0;
-            st.y = 0;
-          } else {
-            st.scale = 2.5;
-            st.x = 0;
-            st.y = 0;
-          }
-          animateTo();
-          return;
-        }
-        st.lastTap = now;
-
-        // Start pan if zoomed
+      // Single pointer — double-tap detection
+      const now = Date.now();
+      if (now - st.lastTap < 300) {
+        e.stopPropagation();
+        st.lastTap = 0;
         if (st.scale > 1) {
-          e.preventDefault();
-          st.panning = true;
-          st.panSX = e.touches[0].clientX;
-          st.panSY = e.touches[0].clientY;
-          st.panOX = st.x;
-          st.panOY = st.y;
+          st.scale = 1;
+          st.x = 0;
+          st.y = 0;
+        } else {
+          st.scale = 2.5;
+          st.x = 0;
+          st.y = 0;
         }
+        animateTo();
+        return;
       }
+      st.lastTap = now;
+
+      // Pan if zoomed — stop YARL from seeing it
+      if (st.scale > 1) {
+        e.stopPropagation();
+        st.panning = true;
+        st.panSX = e.clientX;
+        st.panSY = e.clientY;
+        st.panOX = st.x;
+        st.panOY = st.y;
+      }
+      // At 1x zoom: DON'T stopPropagation → YARL handles swipe/pull
     };
 
-    const onMove = (e: TouchEvent) => {
-      if (st.pinching && e.touches.length >= 2) {
-        e.preventDefault();
-        const d = dist(e.touches[0], e.touches[1]);
+    const onMove = (e: PointerEvent) => {
+      if (!st.pointers.has(e.pointerId)) return;
+      st.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+      if (st.pinching && st.pointers.size >= 2) {
+        e.stopPropagation();
+        const d = ptrDist();
         st.scale = Math.max(1, Math.min(5, st.initScale * (d / st.initDist)));
-        const cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-        const cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-        st.x = st.initX + (cx - st.initCX) / st.scale;
-        st.y = st.initY + (cy - st.initCY) / st.scale;
+        const c = ptrCenter();
+        st.x = st.initX + (c.x - st.initCX) / st.scale;
+        st.y = st.initY + (c.y - st.initCY) / st.scale;
         clamp();
         apply();
         return;
       }
-      if (st.panning && e.touches.length === 1) {
-        e.preventDefault();
-        st.x = st.panOX + (e.touches[0].clientX - st.panSX) / st.scale;
-        st.y = st.panOY + (e.touches[0].clientY - st.panSY) / st.scale;
+
+      if (st.panning) {
+        e.stopPropagation();
+        st.x = st.panOX + (e.clientX - st.panSX) / st.scale;
+        st.y = st.panOY + (e.clientY - st.panSY) / st.scale;
         clamp();
         apply();
+        return;
       }
+      // At 1x single finger: let through → YARL swipe
     };
 
-    const onEnd = (e: TouchEvent) => {
+    const onUp = (e: PointerEvent) => {
+      const wasTracked = st.pointers.has(e.pointerId);
+      st.pointers.delete(e.pointerId);
+
       if (st.pinching) {
-        if (e.touches.length < 2) {
+        e.stopPropagation();
+        if (st.pointers.size < 2) {
           st.pinching = false;
-          // Snap back to 1x if barely zoomed
+          st.wasPinching = true;
           if (st.scale < 1.05) {
             st.scale = 1;
             st.x = 0;
             st.y = 0;
             animateTo();
-          } else if (e.touches.length === 1) {
-            // Transition remaining finger to pan
+          } else if (st.pointers.size === 1) {
+            // Remaining finger → pan
+            const [remaining] = st.pointers.values();
             st.panning = true;
-            st.panSX = e.touches[0].clientX;
-            st.panSY = e.touches[0].clientY;
+            st.panSX = remaining.x;
+            st.panSY = remaining.y;
             st.panOX = st.x;
             st.panOY = st.y;
           }
         }
-        e.preventDefault();
         return;
       }
-      if (st.panning && e.touches.length === 0) {
-        st.panning = false;
+
+      if (st.panning) {
+        e.stopPropagation();
+        if (st.pointers.size === 0) {
+          st.panning = false;
+          st.wasPinching = false;
+        }
+        return;
+      }
+
+      // After pinch ended, stop the remaining finger's pointerup from
+      // reaching YARL (which would otherwise trigger swipe/pull/close)
+      if (st.wasPinching && wasTracked) {
+        e.stopPropagation();
+        if (st.pointers.size === 0) st.wasPinching = false;
+        return;
       }
     };
 
-    el.addEventListener("touchstart", onStart, { passive: false });
-    el.addEventListener("touchmove", onMove, { passive: false });
-    el.addEventListener("touchend", onEnd, { passive: false });
+    const onCancel = (e: PointerEvent) => {
+      st.pointers.delete(e.pointerId);
+      if (st.pinching || st.panning || st.wasPinching) {
+        e.stopPropagation();
+      }
+      if (st.pointers.size < 2) st.pinching = false;
+      if (st.pointers.size === 0) {
+        st.panning = false;
+        st.wasPinching = false;
+      }
+    };
+
+    el.addEventListener("pointerdown", onDown);
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerup", onUp);
+    el.addEventListener("pointercancel", onCancel);
 
     return () => {
-      el.removeEventListener("touchstart", onStart);
-      el.removeEventListener("touchmove", onMove);
-      el.removeEventListener("touchend", onEnd);
+      el.removeEventListener("pointerdown", onDown);
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerup", onUp);
+      el.removeEventListener("pointercancel", onCancel);
     };
   }, []);
 
@@ -262,6 +322,7 @@ function PinchZoomSlide({ children }: { children: React.ReactNode }) {
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
+        touchAction: "none",
       }}
     >
       <div
