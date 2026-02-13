@@ -232,11 +232,7 @@ export default function LightboxWrapper({
   useEffect(() => {
     if (!open) return;
 
-    const scrollY = window.scrollY;
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.left = "0";
-    document.body.style.right = "0";
+    document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
 
     const vv = window.visualViewport;
@@ -247,12 +243,9 @@ export default function LightboxWrapper({
     vv?.addEventListener("scroll", onViewportChange);
 
     return () => {
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
+      document.documentElement.style.overflow = "";
       document.body.style.overflow = "";
-      window.scrollTo(0, scrollY);
+      setViewportOffset(0);
       vv?.removeEventListener("resize", onViewportChange);
       vv?.removeEventListener("scroll", onViewportChange);
     };
