@@ -5,7 +5,6 @@ import PhotoGallery from "@/components/sections/PhotoGallery";
 import EventSchedule from "@/components/sections/EventSchedule";
 import AddToCalendar from "@/components/sections/AddToCalendar";
 import Footer from "@/components/sections/Footer";
-import Starfield from "@/components/ui/Starfield";
 import GrainOverlay from "@/components/ui/GrainOverlay";
 import IntroCover from "@/components/ui/IntroCover";
 import IntroVideoLoader from "@/components/ui/IntroVideoLoader";
@@ -15,7 +14,6 @@ export default function Home() {
   return (
     <>
       <BackgroundImage />
-      <Starfield />
       <Navbar />
       <main className="relative z-10">
         <Hero />

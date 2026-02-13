@@ -10,6 +10,12 @@ export const PARALLAX_LAYERS = {
   foreground: 1.2,
 } as const;
 
+export const BG_PARALLAX = {
+  starsRear: 0.02,
+  mandala: 0.03,
+  starsFront: 0.05,
+} as const;
+
 export type ParallaxSpeed = (typeof PARALLAX_LAYERS)[keyof typeof PARALLAX_LAYERS];
 
 /**
