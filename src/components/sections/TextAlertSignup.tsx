@@ -61,6 +61,8 @@ export default function TextAlertSignup() {
             <input
               type="tel"
               inputMode="tel"
+              autoComplete="tel"
+              name="phone"
               placeholder="(555) 123-4567"
               value={phone}
               onChange={(e) => {
@@ -69,7 +71,7 @@ export default function TextAlertSignup() {
               }}
               onKeyDown={handleKeyDown}
               disabled={submitting}
-              className="flex-1 min-w-0 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white placeholder:text-white/40 font-body text-sm focus:outline-none focus:border-gold/50 transition-colors disabled:opacity-50"
+              className="flex-1 min-w-0 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white placeholder:text-white/40 font-body text-base focus:outline-none focus:border-gold/50 transition-colors disabled:opacity-50"
             />
             <button
               onClick={handleSubmit}
