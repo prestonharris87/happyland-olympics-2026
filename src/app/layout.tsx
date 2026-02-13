@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Tourney, Montserrat } from "next/font/google";
+import PageViewTracker from "@/components/analytics/PageViewTracker";
 import "./globals.css";
 
 const tourney = Tourney({
@@ -35,6 +36,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${tourney.variable} ${montserrat.variable} antialiased`}>
         {children}
+        <PageViewTracker />
       </body>
     </html>
   );
