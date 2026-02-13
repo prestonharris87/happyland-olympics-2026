@@ -18,6 +18,7 @@ export type EngagedSlide = Slide & {
 interface LightboxWrapperProps {
   open: boolean;
   slides: EngagedSlide[];
+  index?: number;
   onClose: () => void;
 }
 
@@ -166,10 +167,15 @@ function NavigationHint({ onDismiss }: { onDismiss: () => void }) {
 export default function LightboxWrapper({
   open,
   slides,
+  index = 0,
   onClose,
 }: LightboxWrapperProps) {
   const [hintSeen, setHintSeen] = useState(true);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(index);
+
+  useEffect(() => {
+    setCurrentIndex(index);
+  }, [index]);
 
   useEffect(() => {
     setHintSeen(localStorage.getItem("lightbox-hint-seen") === "true");
@@ -199,7 +205,7 @@ export default function LightboxWrapper({
         >
           <Lightbox
             open={true}
-            index={0}
+            index={index}
             close={onClose}
             slides={slides}
             plugins={[Video, Counter]}

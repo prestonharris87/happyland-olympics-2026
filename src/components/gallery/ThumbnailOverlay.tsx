@@ -25,19 +25,19 @@ export default function ThumbnailOverlay({
 
       {/* Engagement badges - bottom right */}
       {loaded && (hearts > 0 || comments > 0) && (
-        <div className="absolute bottom-1.5 right-1.5 flex items-center gap-1.5">
+        <div className="absolute bottom-1.5 right-1.5 flex items-center gap-2">
           {hearts > 0 && (
-            <div className="flex items-center gap-0.5 bg-black/50 backdrop-blur-sm rounded-md px-1.5 py-0.5">
-              <Heart size={10} className="fill-red-500 text-red-500" strokeWidth={0} />
-              <span className="text-[10px] font-body text-white/80 tabular-nums">
+            <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-md px-2 py-1">
+              <Heart size={20} className="fill-red-500 text-red-500" strokeWidth={0} />
+              <span className="text-xl font-body font-semibold text-white/80 tabular-nums">
                 {hearts}
               </span>
             </div>
           )}
           {comments > 0 && (
-            <div className="flex items-center gap-0.5 bg-black/50 backdrop-blur-sm rounded-md px-1.5 py-0.5">
-              <MessageCircle size={10} className="text-white/80" />
-              <span className="text-[10px] font-body text-white/80 tabular-nums">
+            <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm rounded-md px-2 py-1">
+              <MessageCircle size={20} className="text-white/80" />
+              <span className="text-xl font-body font-semibold text-white/80 tabular-nums">
                 {comments}
               </span>
             </div>

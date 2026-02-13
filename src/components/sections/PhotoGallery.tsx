@@ -103,6 +103,7 @@ function GalleryInner() {
   const [photos, setPhotos] = useState<GalleryPhoto[]>([]);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxSlides, setLightboxSlides] = useState<EngagedSlide[]>([]);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
   const [shuffleKey, setShuffleKey] = useState(0);
   const [shuffleCount, setShuffleCount] = useState(0);
 
@@ -206,11 +207,8 @@ function GalleryInner() {
                     const clickedIndex = validPhotos.findIndex(
                       (vp) => vp.publicId === photo.publicId
                     );
-                    const allSlides = validPhotos.map(buildSlide);
-                    setLightboxSlides([
-                      ...allSlides.slice(clickedIndex),
-                      ...allSlides.slice(0, clickedIndex),
-                    ]);
+                    setLightboxSlides(validPhotos.map(buildSlide));
+                    setLightboxIndex(clickedIndex);
                     setLightboxOpen(true);
                   }}
                 >
@@ -254,6 +252,7 @@ function GalleryInner() {
         <LightboxWrapper
           open={lightboxOpen}
           slides={lightboxSlides}
+          index={lightboxIndex}
           onClose={() => setLightboxOpen(false)}
         />
       </div>
